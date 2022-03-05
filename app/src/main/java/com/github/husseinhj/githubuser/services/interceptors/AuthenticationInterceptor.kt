@@ -6,8 +6,8 @@ import okhttp3.Interceptor
 class AuthenticationInterceptor : Interceptor {
 
     /*
-    Interceptor add to shows that we can handle authentication parameters before send to server or after getting response to handle refresh_token.
-    As sample added commented access_token in code to shows that were we most add our token.
+    The interceptor shows that we can handle authentication parameters before sending to the server and after receiving a response to handle refresh_token.
+    As a sample, I commented access_token in code to show where to add our token.
      */
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()

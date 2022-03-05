@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 /*
-This a provider for build our network client and make it transparent for out side to not knowing about which service we are using.
+Providing our network clients with this provider is transparent to other classes so that they do not know which services we are using.
  */
 object WebServiceProvider {
 
