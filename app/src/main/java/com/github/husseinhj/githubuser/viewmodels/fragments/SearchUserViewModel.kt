@@ -1,17 +1,22 @@
 package com.github.husseinhj.githubuser.viewmodels.fragments
 
+import android.content.Context
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.husseinhj.githubuser.adapters.OnUserCellClickedListener
 import com.github.husseinhj.githubuser.adapters.UserSearchResultAdapter
 import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
-import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage
 import com.github.husseinhj.githubuser.services.repositories.SearchRepository
+import com.github.husseinhj.githubuser.utils.InternetConnectivityUtil
 import kotlinx.coroutines.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import java.util.*
+
+enum class ErrorEnumType {
+    NONE,
+    NETWORK,
+    SERVER
+}
 
 class SearchUserViewModel: ViewModel() {
     private lateinit var clickListener: OnUserCellClickedListener
@@ -21,6 +26,10 @@ class SearchUserViewModel: ViewModel() {
 
     val resultAdapter: MutableLiveData<UserSearchResultAdapter> by lazy {
         MutableLiveData<UserSearchResultAdapter>()
+    }
+
+    val errorType: MutableLiveData<ErrorEnumType> by lazy {
+        MutableLiveData<ErrorEnumType>()
     }
 
     val loadingVisibility: MutableLiveData<Int> by lazy {
@@ -35,20 +44,26 @@ class SearchUserViewModel: ViewModel() {
         MutableLiveData<Int>(View.GONE)
     }
 
-    private fun searchUser(query: String?) {
+    val errorPlaceholderVisibility: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>(View.GONE)
+    }
+
+    fun searchUser(query: String?, context: Context) {
         searchJob?.cancel()
 
         if (query.isNullOrBlank()) {
-            resultAdapter.value = null
-            loadingVisibility.value = View.GONE
-            emptyResultVisibility.value = View.VISIBLE
+            showNowValuePlaceholder()
             return
         }
 
-        val validatedSearchQuery = query
-            .trimStart()
-            .trimEnd()
-            .lowercase(Locale.getDefault())
+        if (!InternetConnectivityUtil.isInternetAvailable(context)) {
+            errorPlaceholderVisibility.value = View.VISIBLE
+            errorType.value = ErrorEnumType.NETWORK
+            return
+        }
+
+        errorType.value = ErrorEnumType.NONE
+        val validatedSearchQuery = removeSpaceAndLowercase(query)
 
         loadingVisibility.value = View.VISIBLE
         emptyResultVisibility.value = View.GONE
@@ -58,42 +73,41 @@ class SearchUserViewModel: ViewModel() {
                 run {
                     loadingVisibility.value = View.GONE
                     dataset = result.body()?.items
-                    if (result.isSuccessful) {
-                        val adapter = UserSearchResultAdapter(dataset!!) {
-                            clickListener.invoke(it)
-                        }
-                        resultAdapter.value = adapter
+                    if (!result.isSuccessful) {
+                        showNowValuePlaceholder()
+                        errorType.value = ErrorEnumType.SERVER
+                        errorPlaceholderVisibility.value = View.VISIBLE
 
-                        resultVisibility.value = View.VISIBLE
-                        emptyResultVisibility.value = View.GONE
-                    } else {
-                        resultAdapter.value = null
-                        resultVisibility.value = View.GONE
-                        emptyResultVisibility.value = View.VISIBLE
+                        return@run
                     }
+
+                    val adapter = UserSearchResultAdapter(dataset!!) {
+                        clickListener.invoke(it)
+                    }
+                    resultAdapter.value = adapter
+
+                    errorType.value = ErrorEnumType.NONE
+                    resultVisibility.value = View.VISIBLE
+                    emptyResultVisibility.value = View.GONE
+                    errorPlaceholderVisibility.value = View.GONE
                 }
             }
         }
     }
 
+    private fun showNowValuePlaceholder() {
+        resultAdapter.value = null
+        loadingVisibility.value = View.GONE
+        emptyResultVisibility.value = View.VISIBLE
+    }
+
+    private fun removeSpaceAndLowercase(query: String) = query
+        .trimStart()
+        .trimEnd()
+        .lowercase(Locale.getDefault())
+
     fun setOnUserCellClickedListener(listener: OnUserCellClickedListener) {
         this.clickListener = listener
     }
 
-    fun subscribeOnSearchBarQueryEvent() {
-        EventBus.getDefault().register(this)
-    }
-
-    fun unsubscribeToSearchBarQueryEvent() {
-        EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe
-    fun onSearchBarMessage(message: OnSearchBarMessage) {
-        if (message.focused != null) {
-            return
-        }
-
-        searchUser(message.query)
-    }
 }

@@ -17,4 +17,7 @@
     <string name="error">Error</string>
     <string name="server_error_message">Something went wrong.\n%s.\n\nPlease try it again.</string>
     <string name="ok_button">OK</string>
+    <string name="error_placeholder_image">Error placeholder image</string>
+    <string name="you_are_not_connected_to_internet">You are not connected to internet</string>
+    <string name="unknown_error_happened_please_try_it_again">Unknown error happened. Please try it again!</string>
 </resources>
