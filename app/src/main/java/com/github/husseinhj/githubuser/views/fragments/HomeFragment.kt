@@ -1,29 +1,29 @@
 package com.github.husseinhj.githubuser.views.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import com.github.husseinhj.githubuser.R
+import androidx.databinding.DataBindingUtil
+import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.databinding.FragmentHomeBinding
-import com.github.husseinhj.githubuser.extensions.navigate
-import com.github.husseinhj.githubuser.models.eventbus.OnBackButtonVisibilityMessage
-import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage
+import com.github.husseinhj.githubuser.extensions.showSoftBackButton
 import com.github.husseinhj.githubuser.viewmodels.fragments.HomeViewModel
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment() {
 
-    private val viewModel =  HomeViewModel()
+    private val viewModel = HomeViewModel()
     private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        title = getString(R.string.home_title)
+        this.toolbarAppearance?.setOnFocusListener {
+            this.navigateFromHomeToSearchFragment()
+        }
 
         binding = DataBindingUtil.inflate(
             inflater,
@@ -36,7 +36,7 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.callToActionButton.setOnClickListener {
-            viewModel.onStartButtonClicked()
+            this.navigateFromHomeToSearchFragment()
         }
 
         return binding.root
@@ -45,22 +45,6 @@ class HomeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        EventBus.getDefault().register(this)
-        EventBus.getDefault().post(OnBackButtonVisibilityMessage(false))
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe
-    fun onSearchBarMessage(message: OnSearchBarMessage) {
-        if (message.focused == true) {
-            this.navigate(
-                R.id.action_homeFragment_to_searchUserFragment
-            )
-        }
+        this.showSoftBackButton(false)
     }
 }

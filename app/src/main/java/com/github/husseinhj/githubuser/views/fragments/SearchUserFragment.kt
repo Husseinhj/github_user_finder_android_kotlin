@@ -1,24 +1,20 @@
 package com.github.husseinhj.githubuser.views.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import com.github.husseinhj.githubuser.R
+import androidx.databinding.DataBindingUtil
+import com.github.husseinhj.githubuser.bases.BaseFragment
+import com.github.husseinhj.githubuser.extensions.debounce
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
-import com.github.husseinhj.githubuser.databinding.FragmentSearchUserBinding
-import com.github.husseinhj.githubuser.extensions.navigate
 import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
-import com.github.husseinhj.githubuser.models.eventbus.OnBackButtonVisibilityMessage
-import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage
 import com.github.husseinhj.githubuser.viewmodels.fragments.ErrorEnumType
+import com.github.husseinhj.githubuser.databinding.FragmentSearchUserBinding
 import com.github.husseinhj.githubuser.viewmodels.fragments.SearchUserViewModel
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 
-class SearchUserFragment : Fragment() {
+class SearchUserFragment : BaseFragment() {
 
     private var viewModel = SearchUserViewModel()
     private lateinit var binding: FragmentSearchUserBinding
@@ -27,6 +23,11 @@ class SearchUserFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        title = getString(R.string.user_search_title)
+
+        if (::binding.isInitialized) {
+            return binding.root
+        }
 
         binding = DataBindingUtil.inflate(
             inflater,
@@ -35,37 +36,22 @@ class SearchUserFragment : Fragment() {
             false
         )
 
+        viewModel = SearchUserViewModel()
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        EventBus.getDefault().register(this)
         handleErrorPlaceholder()
         viewModel.setOnUserCellClickedListener {
             navigateToUserDetail(it)
         }
 
-        return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        EventBus.getDefault().post(OnBackButtonVisibilityMessage(true))
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe
-    fun onSearchBarMessage(message: OnSearchBarMessage) {
-        if (message.focused != null) {
-            return
+        toolbarAppearance?.setOnTextChangedListener { query ->
+            query.debounce { debouncedWord ->
+                context?.let { viewModel.searchUser(debouncedWord, it) }
+            }
         }
 
-        context?.let { viewModel.searchUser(message.query, it) }
+        return binding.root
     }
 
     private fun handleErrorPlaceholder() {
@@ -105,14 +91,9 @@ class SearchUserFragment : Fragment() {
     }
 
     private fun navigateToUserDetail(userModel: UserSimpleDetailsModel) {
-        EventBus.getDefault().post(OnSearchBarMessage(focused = false))
-
         val data = Bundle()
         data.putString(GITHUB_USERNAME, userModel.login)
 
-        this.navigate(
-            R.id.action_searchUserFragment_to_userDetailFragment,
-            data
-        )
+        this.navigateFromSearchToDetailFragment(data)
     }
 }

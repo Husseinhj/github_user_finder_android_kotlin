@@ -25,4 +25,7 @@
     <string name="onboarding_cta_button_title">Find them right now</string>
     <string name="_50_millions">+50 millions</string>
     <string name="onboarding_background_shape">Simple shape in on-boarding</string>
+    <string name="home_title">Welcome</string>
+    <string name="user_profile_title">User profile</string>
+    <string name="user_search_title">Search user</string>
 </resources>
