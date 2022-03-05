@@ -1,27 +1,23 @@
 package com.github.husseinhj.githubuser.views.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
+import android.content.Context
+import android.view.LayoutInflater
 import com.github.husseinhj.githubuser.R
-import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
-import com.github.husseinhj.githubuser.databinding.FragmentUserDetailBinding
-import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
-import com.github.husseinhj.githubuser.extensions.navigate
+import androidx.databinding.DataBindingUtil
+import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.extensions.navigateUp
-import com.github.husseinhj.githubuser.models.eventbus.OnBackButtonVisibilityMessage
-import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage
-import com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModel
+import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
+import com.github.husseinhj.githubuser.extensions.showSoftBackButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
+import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
+import com.github.husseinhj.githubuser.databinding.FragmentUserDetailBinding
+import com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModel
 
-class UserDetailFragment : Fragment() {
+class UserDetailFragment : BaseFragment() {
     private var usernameParam: String? = null
     private var cameFromDeeplink: Boolean = false
     private var viewModel = UserDetailViewModel()
@@ -29,18 +25,29 @@ class UserDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
             usernameParam = it.getString(GITHUB_USERNAME)
-            cameFromDeeplink = it.containsKey("android-support-nav:controller:deepLinkIntent")
+            cameFromDeeplink = hasDeeplinkIntent(it)
         }
-
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        title = getString(R.string.user_profile_title)
+        this.toolbarAppearance?.setOnFocusListener {
+            if (cameFromDeeplink) {
+                this.navigateFromDetailToSearchFragment()
+            } else {
+                this.navigateUp()
+            }
+        }
+
+        if (::binding.isInitialized) {
+            return binding.root
+        }
 
         binding = DataBindingUtil.inflate(
             inflater,
@@ -66,29 +73,11 @@ class UserDetailFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        EventBus.getDefault().register(this)
-        EventBus.getDefault().post(OnSearchBarMessage(collapseSearchBar = true))
-        EventBus.getDefault().post(OnBackButtonVisibilityMessage(true))
+        this.showSoftBackButton(true)
     }
 
-    override fun onStop() {
-        super.onStop()
-
-        EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe
-    fun onSearchBarMessage(message: OnSearchBarMessage) {
-        if (message.focused == true) {
-            if (cameFromDeeplink) {
-                this.navigate(
-                    R.id.action_userDetailFragment_to_searchUserFragment
-                )
-            } else {
-                this.navigateUp()
-            }
-        }
-    }
+    private fun hasDeeplinkIntent(it: Bundle) =
+        it.containsKey("android-support-nav:controller:deepLinkIntent")
 
     private fun showErrorAlert(errorMessage: String?, context: Context) {
         MaterialAlertDialogBuilder(context)
