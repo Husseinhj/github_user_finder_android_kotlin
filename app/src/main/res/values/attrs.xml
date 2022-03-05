@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="default_style">
+        <attr name="text_color" format="color"/>
+        <attr name="secondary_text_color" format="color"/>
+        <attr name="user_search_background" format="color"/>
+        <attr name="user_search_cell_background" format="color"/>
+    </declare-styleable>
+</resources>

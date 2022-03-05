@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="cultured">#F5F5F5</color>
+    <color name="silver">#C8C8C8</color>
+    <color name="silver_10">#33C8C8C8</color>
+    <color name="silver_30">#88C8C8C8</color>
+    <color name="silver_chalice">#B3B3B3</color>
+    <color name="raisin_black">#242325</color>
 </resources>
