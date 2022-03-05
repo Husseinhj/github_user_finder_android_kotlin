@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SearchTitle">
+        <item name="maxLines">2</item>
+        <item name="android:lines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="AppTitle">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/text_color</item>
+    </style>
+    <style name="AppSubtitle">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">?attr/secondary_text_color</item>
+    </style>
+    <style name="AppContentBody">
+        <item name="maxLines">1</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?attr/text_color</item>
+    </style>
+    <style name="AppContentDescription">
+        <item name="maxLines">1</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?attr/secondary_text_color</item>
+    </style>
+
+    <style name="AppValueDescription">
+        <item name="maxLines">1</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/text_color</item>
+    </style>
+</resources>
