@@ -1,11 +1,9 @@
 package com.github.husseinhj.githubuser.viewmodels.fragments
 
 import android.view.View
-import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.husseinhj.githubuser.extensions.convertToDate
-import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
 import com.github.husseinhj.githubuser.extensions.toString
 import com.github.husseinhj.githubuser.models.data.UserDetailsResponseModel
 import com.github.husseinhj.githubuser.services.repositories.UserRepository
@@ -15,6 +13,12 @@ import retrofit2.Response
 
 class UserDetailViewModel: ViewModel() {
 
+    val serverErrorMessage: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+    val userAvatarUrl: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
     val fullName: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
@@ -55,7 +59,7 @@ class UserDetailViewModel: ViewModel() {
         MutableLiveData<Int>()
     }
 
-    fun getUserDetail(userId: String, userAvatarView: ImageView) {
+    fun getUserDetail(userId: String) {
         loadingVisibility.value = View.VISIBLE
 
         UserRepository.getUserDetailAsync(userId, object: Callback<UserDetailsResponseModel> {
@@ -70,7 +74,7 @@ class UserDetailViewModel: ViewModel() {
                         userBio.value = bio ?: ""
                         userFollowers.value = followers.toString()
                         userFollowing.value = following.toString()
-                        applyImageToView(avatarURL, userAvatarView)
+                        userAvatarUrl.value = avatarURL.toString()
 
                         val date = createdAt?.convertToDate()
                         userJoinedAt.value = date?.toString("MMMM YYYY") ?: ""
@@ -91,12 +95,9 @@ class UserDetailViewModel: ViewModel() {
 
             override fun onFailure(call: Call<UserDetailsResponseModel>, t: Throwable) {
                 loadingVisibility.value = View.GONE
+                serverErrorMessage.value = t.localizedMessage
             }
 
         })
-    }
-
-    fun applyImageToView(imageUrl: String?, view: ImageView) {
-        view.downloadAndShowImage(imageUrl)
     }
 }

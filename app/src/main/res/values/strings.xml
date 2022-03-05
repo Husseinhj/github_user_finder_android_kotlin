@@ -14,4 +14,7 @@
     <string name="user_working_at">User working at</string>
     <string name="user_location">User location</string>
     <string name="user_email_address">User email address</string>
+    <string name="error">Error</string>
+    <string name="server_error_message">Something went wrong.\n%s.\n\nPlease try it again.</string>
+    <string name="ok_button">OK</string>
 </resources>
