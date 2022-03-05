@@ -35,7 +35,7 @@ class SearchUserViewModel: ViewModel() {
         MutableLiveData<Int>(View.GONE)
     }
 
-    fun searchUser(query: String?) {
+    private fun searchUser(query: String?) {
         searchJob?.cancel()
 
         if (query.isNullOrBlank()) {
@@ -80,11 +80,11 @@ class SearchUserViewModel: ViewModel() {
         this.clickListener = listener
     }
 
-    fun subscribeOfSearchQueryEvent() {
+    fun subscribeOnSearchBarQueryEvent() {
         EventBus.getDefault().register(this)
     }
 
-    fun unsubscribeOfSearchQueryEvent() {
+    fun unsubscribeToSearchBarQueryEvent() {
         EventBus.getDefault().unregister(this)
     }
 

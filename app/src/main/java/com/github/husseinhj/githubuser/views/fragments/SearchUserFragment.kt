@@ -34,7 +34,7 @@ class SearchUserFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.subscribeOfSearchQueryEvent()
+        viewModel.subscribeOnSearchBarQueryEvent()
         viewModel.setOnUserCellClickedListener {
             navigateToUserDetail(it)
         }
@@ -45,7 +45,7 @@ class SearchUserFragment : Fragment() {
     override fun onStop() {
         super.onStop()
 
-        viewModel.unsubscribeOfSearchQueryEvent()
+        viewModel.unsubscribeToSearchBarQueryEvent()
     }
 
     private fun navigateToUserDetail(userModel: UserSimpleDetailsModel) {
