@@ -12,6 +12,7 @@ import com.github.husseinhj.githubuser.R
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
 import com.github.husseinhj.githubuser.databinding.FragmentUserDetailBinding
 import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
+import com.github.husseinhj.githubuser.extensions.navigate
 import com.github.husseinhj.githubuser.extensions.navigateUp
 import com.github.husseinhj.githubuser.models.eventbus.OnBackButtonVisibilityMessage
 import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage
@@ -22,6 +23,7 @@ import org.greenrobot.eventbus.Subscribe
 
 class UserDetailFragment : Fragment() {
     private var usernameParam: String? = null
+    private var cameFromDeeplink: Boolean = false
     private var viewModel = UserDetailViewModel()
     private lateinit var binding: FragmentUserDetailBinding
 
@@ -29,6 +31,7 @@ class UserDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             usernameParam = it.getString(GITHUB_USERNAME)
+            cameFromDeeplink = it.containsKey("android-support-nav:controller:deepLinkIntent")
         }
 
 
@@ -68,8 +71,8 @@ class UserDetailFragment : Fragment() {
         EventBus.getDefault().post(OnBackButtonVisibilityMessage(true))
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
 
         EventBus.getDefault().unregister(this)
     }
@@ -77,7 +80,13 @@ class UserDetailFragment : Fragment() {
     @Subscribe
     fun onSearchBarMessage(message: OnSearchBarMessage) {
         if (message.focused == true) {
-            this.navigateUp()
+            if (cameFromDeeplink) {
+                this.navigate(
+                    R.id.action_userDetailFragment_to_searchUserFragment
+                )
+            } else {
+                this.navigateUp()
+            }
         }
     }
 

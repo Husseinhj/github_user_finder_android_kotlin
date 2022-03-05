@@ -59,12 +59,6 @@ class SearchUserFragment : Fragment() {
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        EventBus.getDefault().post(OnBackButtonVisibilityMessage(false))
-    }
-
     @Subscribe
     fun onSearchBarMessage(message: OnSearchBarMessage) {
         if (message.focused != null) {
