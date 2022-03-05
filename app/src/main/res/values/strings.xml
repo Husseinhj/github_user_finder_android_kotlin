@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Github User</string>
+    <string name="app_name">Github User finder</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_user">Search user</string>
     <string name="users_not_found_placeholder">Users not found!</string>
