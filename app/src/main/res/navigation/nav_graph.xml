@@ -25,7 +25,12 @@
         android:id="@+id/userDetailFragment"
         android:name="com.github.husseinhj.githubuser.views.fragments.UserDetailFragment"
         android:label="fragment_user_detail"
-        tools:layout="@layout/fragment_user_detail" />
+        tools:layout="@layout/fragment_user_detail">
+        <deepLink
+            android:id="@+id/deepLink"
+            app:action="android.intent.action.VIEW"
+            app:uri="https://github.com/{github_username}" />
+    </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.github.husseinhj.githubuser.views.fragments.HomeFragment"

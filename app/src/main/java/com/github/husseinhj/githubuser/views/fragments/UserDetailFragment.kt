@@ -30,6 +30,8 @@ class UserDetailFragment : Fragment() {
         arguments?.let {
             usernameParam = it.getString(GITHUB_USERNAME)
         }
+
+
     }
 
     override fun onCreateView(
