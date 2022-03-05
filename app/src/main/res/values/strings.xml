@@ -8,4 +8,10 @@
     <string name="following">following</string>
     <string name="followers">followers</string>
     <string name="joined">Joined</string>
+    <string name="user_connections_info">User connections info</string>
+    <string name="separation_char">·</string>
+    <string name="when_user_joined">When user joined</string>
+    <string name="user_working_at">User working at</string>
+    <string name="user_location">User location</string>
+    <string name="user_email_address">User email address</string>
 </resources>
