@@ -1,20 +1,17 @@
 package com.github.husseinhj.githubuser.viewmodels.fragments
 
-import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bumptech.glide.Glide
-import com.github.husseinhj.githubuser.R
 import com.github.husseinhj.githubuser.extensions.convertToDate
+import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
 import com.github.husseinhj.githubuser.extensions.toString
 import com.github.husseinhj.githubuser.models.data.UserDetailsResponseModel
 import com.github.husseinhj.githubuser.services.repositories.UserRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
 
 class UserDetailViewModel: ViewModel() {
 
@@ -58,7 +55,7 @@ class UserDetailViewModel: ViewModel() {
         MutableLiveData<Int>()
     }
 
-    fun getUserDetail(userId: String, userAvatarView: ImageView, context: Context) {
+    fun getUserDetail(userId: String, userAvatarView: ImageView) {
         loadingVisibility.value = View.VISIBLE
 
         UserRepository.getUserDetailAsync(userId, object: Callback<UserDetailsResponseModel> {
@@ -73,7 +70,7 @@ class UserDetailViewModel: ViewModel() {
                         userBio.value = bio ?: ""
                         userFollowers.value = followers.toString()
                         userFollowing.value = following.toString()
-                        applyImageToView(avatarURL, userAvatarView, context)
+                        applyImageToView(avatarURL, userAvatarView)
 
                         val date = createdAt?.convertToDate()
                         userJoinedAt.value = date?.toString("MMMM YYYY") ?: ""
@@ -99,13 +96,7 @@ class UserDetailViewModel: ViewModel() {
         })
     }
 
-    fun applyImageToView(imageUrl: String?, view: ImageView, context: Context) {
-        Glide
-            .with(context)
-            .load(imageUrl)
-            .circleCrop()
-            .error(R.drawable.ic_fail_profile_avatar_placeholder)
-            .placeholder(R.drawable.ic_person_placeholder)
-            .into(view)
+    fun applyImageToView(imageUrl: String?, view: ImageView) {
+        view.downloadAndShowImage(imageUrl)
     }
 }

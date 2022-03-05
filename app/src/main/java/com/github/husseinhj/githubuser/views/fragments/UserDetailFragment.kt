@@ -41,7 +41,7 @@ class UserDetailFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        usernameParam?.let { viewModel.getUserDetail(it, binding.userAvatarView, requireContext()) }
+        usernameParam?.let { viewModel.getUserDetail(it, binding.userAvatarView) }
 
         return binding.root
     }

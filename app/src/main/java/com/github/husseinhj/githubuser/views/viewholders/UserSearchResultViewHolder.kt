@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.husseinhj.githubuser.R
+import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
 
 class UserSearchResultViewHolder(itemView: View)
     : RecyclerView.ViewHolder(itemView) {
@@ -15,13 +16,7 @@ class UserSearchResultViewHolder(itemView: View)
 
     @SuppressLint("UseCompatLoadingForDrawables")
     fun setImageUrl(imageUrl: String) {
-        Glide
-            .with(context)
-            .load(imageUrl)
-            .circleCrop()
-            .error(R.drawable.ic_fail_profile_avatar_placeholder)
-            .placeholder(R.drawable.ic_person_placeholder)
-            .into(imageView)
+        imageView.downloadAndShowImage(imageUrl)
     }
 
     fun setUsername(username: String) {
