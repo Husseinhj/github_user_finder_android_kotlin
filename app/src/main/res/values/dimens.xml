@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="half_default_margin">4sp</dimen>
     <dimen name="default_margin">8sp</dimen>
     <dimen name="navigation_margin">15sp</dimen>
     <dimen name="default_corner_radius">8sp</dimen>
