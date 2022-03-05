@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.github.husseinhj.githubuser.R
+import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
 import com.github.husseinhj.githubuser.databinding.FragmentSearchUserBinding
 import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage

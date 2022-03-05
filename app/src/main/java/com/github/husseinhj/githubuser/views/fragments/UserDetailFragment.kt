@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.github.husseinhj.githubuser.R
+import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
 import com.github.husseinhj.githubuser.databinding.FragmentUserDetailBinding
 import com.github.husseinhj.githubuser.models.eventbus.OnBackButtonVisibilityMessage
 import com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModel
 import org.greenrobot.eventbus.EventBus
-
-const val GITHUB_USERNAME: String = "github_username"
 
 class UserDetailFragment : Fragment() {
     private var usernameParam: String? = null
