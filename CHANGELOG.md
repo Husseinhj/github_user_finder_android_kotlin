@@ -7,5 +7,5 @@
 - View details of the user by clicking on the search result or deep-link (https://github.com/husseinhj)
 
 # v1.1 (vc-2)
-- Add page title for each fragment
+- For each fragment, add a page title
 - Refactor all fragments to manage toolbar states and remove EventBus from the project
