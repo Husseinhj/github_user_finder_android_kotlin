@@ -1,15 +1,13 @@
 package com.github.husseinhj.githubuser.views.viewholders
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.github.husseinhj.githubuser.R
 
-class UserSearchResultViewHolder(itemView: View, private var context: Context)
+class UserSearchResultViewHolder(itemView: View)
     : RecyclerView.ViewHolder(itemView) {
     val userCellView: View = itemView.findViewById(R.id.user_cell_view)
     private val imageView: ImageView = itemView.findViewById(R.id.image_view)

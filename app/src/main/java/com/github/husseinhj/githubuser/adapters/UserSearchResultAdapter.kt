@@ -11,11 +11,8 @@ import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.views.viewholders.UserSearchResultViewHolder
 
 typealias OnUserCellClickedListener = (UserSimpleDetailsModel) -> Unit
-class UserSearchResultAdapter(private val dataset: List<UserSimpleDetailsModel>, private val context: Context, private val clickListener: OnUserCellClickedListener):
+class UserSearchResultAdapter(private val dataset: List<UserSimpleDetailsModel>, private val clickListener: OnUserCellClickedListener):
     BaseAdapter() {
-    private val mInflater: LayoutInflater? = context.getSystemService(
-        Context.LAYOUT_INFLATER_SERVICE
-    ) as? LayoutInflater
 
     override fun getCount(): Int {
         return dataset.size
@@ -36,8 +33,13 @@ class UserSearchResultAdapter(private val dataset: List<UserSimpleDetailsModel>,
         var rowView = currentView?.tag as? UserSearchResultViewHolder
 
         if (currentView == null) {
+            val context = parentViewGroup?.context
+            val mInflater: LayoutInflater? = context?.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE
+            ) as? LayoutInflater
+
             currentView = mInflater?.inflate(R.layout.user_result_item_layout, null)
-            rowView = UserSearchResultViewHolder(currentView!!, context)
+            rowView = UserSearchResultViewHolder(currentView!!)
         }
 
         rowView?.setUsername(resultModel.login ?: "")

@@ -1,14 +1,16 @@
 package com.github.husseinhj.githubuser.viewmodels.fragments
 
-import android.content.Context
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.husseinhj.githubuser.adapters.OnUserCellClickedListener
 import com.github.husseinhj.githubuser.adapters.UserSearchResultAdapter
 import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
+import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage
 import com.github.husseinhj.githubuser.services.repositories.SearchRepository
 import kotlinx.coroutines.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
 class SearchUserViewModel: ViewModel() {
@@ -33,7 +35,7 @@ class SearchUserViewModel: ViewModel() {
         MutableLiveData<Int>(View.GONE)
     }
 
-    fun searchUser(query: String?, context: Context) {
+    fun searchUser(query: String?) {
         searchJob?.cancel()
 
         if (query.isNullOrBlank()) {
@@ -57,7 +59,7 @@ class SearchUserViewModel: ViewModel() {
                     loadingVisibility.value = View.GONE
                     dataset = result.body()?.items
                     if (result.isSuccessful) {
-                        val adapter = UserSearchResultAdapter(dataset!!, context) {
+                        val adapter = UserSearchResultAdapter(dataset!!) {
                             clickListener.invoke(it)
                         }
                         resultAdapter.value = adapter
@@ -76,5 +78,22 @@ class SearchUserViewModel: ViewModel() {
 
     fun setOnUserCellClickedListener(listener: OnUserCellClickedListener) {
         this.clickListener = listener
+    }
+
+    fun subscribeOfSearchQueryEvent() {
+        EventBus.getDefault().register(this)
+    }
+
+    fun unsubscribeOfSearchQueryEvent() {
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe
+    fun onSearchBarMessage(message: OnSearchBarMessage) {
+        if (message.focused != null) {
+            return
+        }
+
+        searchUser(message.query)
     }
 }
