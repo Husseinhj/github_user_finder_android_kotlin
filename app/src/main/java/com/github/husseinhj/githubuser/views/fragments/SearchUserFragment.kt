@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
 import com.github.husseinhj.githubuser.R
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
 import com.github.husseinhj.githubuser.databinding.FragmentSearchUserBinding
+import com.github.husseinhj.githubuser.extensions.navigate
 import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
+import com.github.husseinhj.githubuser.models.eventbus.OnBackButtonVisibilityMessage
 import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage
 import com.github.husseinhj.githubuser.viewmodels.fragments.ErrorEnumType
 import com.github.husseinhj.githubuser.viewmodels.fragments.SearchUserViewModel
@@ -46,10 +47,22 @@ class SearchUserFragment : Fragment() {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        EventBus.getDefault().post(OnBackButtonVisibilityMessage(true))
+    }
+
     override fun onStop() {
         super.onStop()
 
         EventBus.getDefault().unregister(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        EventBus.getDefault().post(OnBackButtonVisibilityMessage(false))
     }
 
     @Subscribe
@@ -103,7 +116,7 @@ class SearchUserFragment : Fragment() {
         val data = Bundle()
         data.putString(GITHUB_USERNAME, userModel.login)
 
-        NavHostFragment.findNavController(this).navigate(
+        this.navigate(
             R.id.action_searchUserFragment_to_userDetailFragment,
             data
         )

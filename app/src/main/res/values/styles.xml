@@ -10,16 +10,12 @@
     </style>
 
     <style name="AppTitle">
-        <item name="maxLines">1</item>
-        <item name="android:lines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textSize">22sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">?attr/text_color</item>
     </style>
     <style name="AppSubtitle">
-        <item name="maxLines">1</item>
-        <item name="android:lines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">?attr/secondary_text_color</item>

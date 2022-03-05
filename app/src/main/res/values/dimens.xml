@@ -2,6 +2,7 @@
 <resources>
     <dimen name="half_default_margin">4sp</dimen>
     <dimen name="default_margin">8sp</dimen>
+    <dimen name="onboarding_margin">30sp</dimen>
     <dimen name="navigation_margin">15sp</dimen>
     <dimen name="default_corner_radius">8sp</dimen>
     <dimen name="search_row_width">85dp</dimen>
@@ -9,4 +10,6 @@
     <dimen name="cell_loading_margin">20sp</dimen>
     <dimen name="age_restriction_corner">20sp</dimen>
     <dimen name="bigScreenLoadingSize">60dp</dimen>
+    <dimen name="user_avatar_small_width">60dp</dimen>
+    <dimen name="user_avatar_small_height">60dp</dimen>
 </resources>

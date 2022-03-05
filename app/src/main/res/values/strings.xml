@@ -20,4 +20,9 @@
     <string name="error_placeholder_image">Error placeholder image</string>
     <string name="you_are_not_connected_to_internet">You are not connected to internet</string>
     <string name="unknown_error_happened_please_try_it_again">Unknown error happened. Please try it again!</string>
+    <string name="on_boarding_title">Find any developer on GitHub quickly!</string>
+    <string name="onboarding_description">Over 50 million developers from all over the world use GitHub services.</string>
+    <string name="onboarding_cta_button_title">Find them right now</string>
+    <string name="_50_millions">+50 millions</string>
+    <string name="onboarding_background_shape">Simple shape in on-boarding</string>
 </resources>

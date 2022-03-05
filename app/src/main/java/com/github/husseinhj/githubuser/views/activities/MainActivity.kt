@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.setOnQueryTextFocusChangeListener { _, focused ->
-            EventBus.getDefault().post(OnSearchBarMessage(focused))
+            EventBus.getDefault().post(OnSearchBarMessage(focused = focused))
         }
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
@@ -65,6 +65,10 @@ class MainActivity : AppCompatActivity() {
 
         return super.onCreateOptionsMenu(menu)
     }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -83,12 +87,19 @@ class MainActivity : AppCompatActivity() {
     @Subscribe
     fun onBackButtonVisibilityMessage(message: OnBackButtonVisibilityMessage) {
         supportActionBar?.setDisplayHomeAsUpEnabled(message.visibleBackButton)
+        supportActionBar?.setDisplayShowHomeEnabled(message.visibleBackButton)
     }
 
     @Subscribe
     fun onSearchBarMessage(message: OnSearchBarMessage) {
         if (message.focused == false) {
             searchView.clearFocus()
+        } else if (message.focused == true) {
+            searchView.onActionViewExpanded()
+        }
+
+        if (message.collapseSearchBar == true) {
+            searchView.onActionViewCollapsed()
         }
     }
 }

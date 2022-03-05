@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/searchUserFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/searchUserFragment"
@@ -26,4 +26,13 @@
         android:name="com.github.husseinhj.githubuser.views.fragments.UserDetailFragment"
         android:label="fragment_user_detail"
         tools:layout="@layout/fragment_user_detail" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.github.husseinhj.githubuser.views.fragments.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_searchUserFragment"
+            app:destination="@id/searchUserFragment" />
+    </fragment>
 </navigation>

@@ -8,15 +8,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
 import com.github.husseinhj.githubuser.R
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
 import com.github.husseinhj.githubuser.databinding.FragmentUserDetailBinding
 import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
+import com.github.husseinhj.githubuser.extensions.navigateUp
 import com.github.husseinhj.githubuser.models.eventbus.OnBackButtonVisibilityMessage
+import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage
 import com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class UserDetailFragment : Fragment() {
     private var usernameParam: String? = null
@@ -59,13 +61,22 @@ class UserDetailFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        EventBus.getDefault().register(this)
+        EventBus.getDefault().post(OnSearchBarMessage(collapseSearchBar = true))
         EventBus.getDefault().post(OnBackButtonVisibilityMessage(true))
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        EventBus.getDefault().post(OnBackButtonVisibilityMessage(false))
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe
+    fun onSearchBarMessage(message: OnSearchBarMessage) {
+        if (message.focused == true) {
+            this.navigateUp()
+        }
     }
 
     private fun showErrorAlert(errorMessage: String?, context: Context) {
@@ -73,12 +84,12 @@ class UserDetailFragment : Fragment() {
             .setTitle(getString(R.string.error))
             .setMessage(getString(R.string.server_error_message, errorMessage ?: ""))
             .setPositiveButton(getString(R.string.ok_button)) { _, _ ->
-                NavHostFragment.findNavController(this).navigateUp()
+                this.navigateUp()
             }
             .show()
     }
 
-    fun applyImageToView(imageUrl: String?, view: ImageView) {
+    private fun applyImageToView(imageUrl: String?, view: ImageView) {
         view.downloadAndShowImage(imageUrl)
     }
 }
