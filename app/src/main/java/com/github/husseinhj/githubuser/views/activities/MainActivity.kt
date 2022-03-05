@@ -11,9 +11,9 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import com.github.husseinhj.githubuser.R
 import com.github.husseinhj.githubuser.databinding.ActivityMainBinding
+import com.github.husseinhj.githubuser.extensions.debounce
 import com.github.husseinhj.githubuser.models.eventbus.OnBackButtonVisibilityMessage
 import com.github.husseinhj.githubuser.models.eventbus.OnSearchBarMessage
-import com.github.husseinhj.githubuser.utils.AnyDebounce.debounce
 import com.github.husseinhj.githubuser.viewmodels.activities.MainActivityViewModel
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         searchView = searchItem?.actionView as SearchView
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        searchView.setOnQueryTextFocusChangeListener { view, focused ->
+        searchView.setOnQueryTextFocusChangeListener { _, focused ->
             EventBus.getDefault().post(OnSearchBarMessage(focused))
         }
 
