@@ -41,9 +41,13 @@ class SearchUserFragment : BaseFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         handleErrorPlaceholder()
-        viewModel.setOnUserCellClickedListener {
-            navigateToUserDetail(it)
+        binding.searchResultGridView.setOnItemClickListener { _, _, position, _ ->
+            val model = viewModel.dataset?.get(position)
+            model?.let { navigateToUserDetail(it) }
         }
+
+        return binding.root
+    }
 
         toolbarAppearance?.setOnTextChangedListener { query ->
             query.debounce { debouncedWord ->

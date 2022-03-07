@@ -1,16 +1,15 @@
 package com.github.husseinhj.githubuser.viewmodels.fragments
 
-import android.content.Context
+import java.util.*
 import android.view.View
-import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.*
+import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.github.husseinhj.githubuser.adapters.OnUserCellClickedListener
+import androidx.lifecycle.MutableLiveData
+import com.github.husseinhj.githubuser.utils.InternetConnectivityUtil
 import com.github.husseinhj.githubuser.adapters.UserSearchResultAdapter
 import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.services.repositories.SearchRepository
-import com.github.husseinhj.githubuser.utils.InternetConnectivityUtil
-import kotlinx.coroutines.*
-import java.util.*
 
 enum class ErrorEnumType {
     NONE,
@@ -19,7 +18,6 @@ enum class ErrorEnumType {
 }
 
 class SearchUserViewModel: ViewModel() {
-    private lateinit var clickListener: OnUserCellClickedListener
 
     private var searchJob: Job? = null
     var dataset: List<UserSimpleDetailsModel>? = null
@@ -67,6 +65,7 @@ class SearchUserViewModel: ViewModel() {
 
         loadingVisibility.value = View.VISIBLE
         emptyResultVisibility.value = View.GONE
+
         searchJob = CoroutineScope(Dispatchers.IO).launch {
             val result = SearchRepository.searchUser(validatedSearchQuery)
             withContext(Dispatchers.Main) {
@@ -81,9 +80,7 @@ class SearchUserViewModel: ViewModel() {
                         return@run
                     }
 
-                    val adapter = UserSearchResultAdapter(dataset!!) {
-                        clickListener.invoke(it)
-                    }
+                    val adapter = UserSearchResultAdapter(dataset!!)
                     resultAdapter.value = adapter
 
                     errorType.value = ErrorEnumType.NONE
@@ -105,9 +102,5 @@ class SearchUserViewModel: ViewModel() {
         .trimStart()
         .trimEnd()
         .lowercase(Locale.getDefault())
-
-    fun setOnUserCellClickedListener(listener: OnUserCellClickedListener) {
-        this.clickListener = listener
-    }
 
 }
