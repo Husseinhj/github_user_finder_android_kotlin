@@ -4,7 +4,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.content.Context
 import android.app.SearchManager
-import java.lang.ref.WeakReference
 import android.annotation.SuppressLint
 import com.github.husseinhj.githubuser.R
 import androidx.appcompat.widget.SearchView
@@ -14,7 +13,40 @@ import com.github.husseinhj.githubuser.extensions.showSoftBackButton
 typealias OnTextChangedListener = (String?) -> Unit
 typealias OnFocusChangedListener = (Boolean) -> Unit
 
-class ToolbarAppearance(private val activity: AppCompatActivity) {
+/**
+ * A wrapper class that handles toolbar appearance, states, and events.
+ *
+ * ## Initialize
+ * To initialize, it requires passing **AppCompatActivity** and **Menu** resource ids
+ * to the constructor, as shown on the following snippet of code:
+ *
+ * ``` kotlin
+ *
+ * val toolbarAppearance = ToolbarAppearance(this, R.menu.main_menu)
+ *
+ * ```
+ *
+ * ## Config
+ * To configure the search bar, call the method [configureSearchBarByMenu]
+ * in the launcher Activity class, in the **onCreateOptionsMenu** method as follows:
+ *
+ * ```
+ *
+ * override fun onCreateOptionsMenu(menu: Menu): Boolean {
+ *     this.toolbarAppearance.configureEnableSearchBar(menu)
+ *
+ *     return super.onCreateOptionsMenu(menu)
+ * }
+ *```
+ *
+ *
+ * <p>
+ * More information about SearchView widget:
+ * @see androidx.appcompat.widget.SearchView
+ * </p>
+ *
+ */
+class ToolbarAppearance(private val activity: AppCompatActivity, private val menuResId: Int) {
 
     private var searchView: SearchView? = null
     private var focusListener: OnFocusChangedListener? = null
@@ -66,8 +98,8 @@ class ToolbarAppearance(private val activity: AppCompatActivity) {
         searchView?.clearFocus()
     }
 
-    fun configureEnableSearchBar(menu: Menu) {
-        activity.menuInflater.inflate(R.menu.main_menu, menu)
+    fun configureSearchBarByMenu(menu: Menu) {
+        activity.menuInflater.inflate(menuResId, menu)
 
         val searchItem: MenuItem? = menu.findItem(R.id.search_button)
         val searchManager = activity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
