@@ -16,8 +16,15 @@ import com.github.husseinhj.githubuser.viewmodels.fragments.SearchUserViewModel
 
 class SearchUserFragment : BaseFragment() {
 
-    private var viewModel = SearchUserViewModel()
+    private lateinit var viewModel: SearchUserViewModel
     private lateinit var binding: FragmentSearchUserBinding
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if(::viewModel.isInitialized)
+            viewModel.saveState()
+
+        super.onSaveInstanceState(outState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +39,7 @@ class SearchUserFragment : BaseFragment() {
             return binding.root
         }
 
+        viewModel = getSavedStateViewModel(SearchUserViewModel::class.java)
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_search_user,
