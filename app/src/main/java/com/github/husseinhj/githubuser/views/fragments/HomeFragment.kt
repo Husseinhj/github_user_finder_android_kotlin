@@ -8,7 +8,6 @@ import com.github.husseinhj.githubuser.R
 import androidx.databinding.DataBindingUtil
 import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.databinding.FragmentHomeBinding
-import com.github.husseinhj.githubuser.extensions.showSoftBackButton
 import com.github.husseinhj.githubuser.viewmodels.fragments.HomeViewModel
 
 class HomeFragment : BaseFragment() {
@@ -20,8 +19,10 @@ class HomeFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        title = getString(R.string.home_title)
-        this.toolbarAppearance?.setOnFocusListener {
+        this.enableBackButton(false)
+        this.setTitle(getString(R.string.home_title))
+
+        this.setOnSearchBarFocusListener {
             this.navigateFromHomeToSearchFragment()
         }
 
@@ -40,11 +41,5 @@ class HomeFragment : BaseFragment() {
         }
 
         return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        this.showSoftBackButton(false)
     }
 }

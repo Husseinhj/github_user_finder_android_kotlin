@@ -14,6 +14,8 @@
     <color name="silver_30">#88C8C8C8</color>
     <color name="silver_chalice">#B3B3B3</color>
     <color name="raisin_black">#242325</color>
+    <color name="rich_black">#080708</color>
+    <color name="eerie_black">#161316</color>
     <color name="magenta">#FFFF4785</color>
     <color name="dark_blue">#FF0B2265</color>
 </resources>

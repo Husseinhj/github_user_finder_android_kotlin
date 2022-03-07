@@ -16,19 +16,30 @@ import com.github.husseinhj.githubuser.viewmodels.fragments.SearchUserViewModel
 
 class SearchUserFragment : BaseFragment() {
 
-    private var viewModel = SearchUserViewModel()
+    private lateinit var viewModel: SearchUserViewModel
     private lateinit var binding: FragmentSearchUserBinding
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if(::viewModel.isInitialized)
+            viewModel.saveState()
+
+        super.onSaveInstanceState(outState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        title = getString(R.string.user_search_title)
+
+        listenToSearchBarTextChanges()
+        this.enableBackButton(true)
+        this.setTitle(getString(R.string.user_search_title))
 
         if (::binding.isInitialized) {
             return binding.root
         }
 
+        viewModel = getSavedStateViewModel(SearchUserViewModel::class.java)
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_search_user,
@@ -36,22 +47,28 @@ class SearchUserFragment : BaseFragment() {
             false
         )
 
-        viewModel = SearchUserViewModel()
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-
-        handleErrorPlaceholder()
-        viewModel.setOnUserCellClickedListener {
-            navigateToUserDetail(it)
+        binding.executePendingBindings()
+        viewModel.resultAdapter.observe(this) {
+            binding.searchResultGridView.deferNotifyDataSetChanged()
         }
 
-        toolbarAppearance?.setOnTextChangedListener { query ->
+        handleErrorPlaceholder()
+        binding.searchResultGridView.setOnItemClickListener { _, _, position, _ ->
+            val model = viewModel.dataset?.get(position)
+            model?.let { navigateToUserDetail(it) }
+        }
+
+        return binding.root
+    }
+
+    private fun listenToSearchBarTextChanges() {
+        this.setOnSearchBarTextChangedListener { query ->
             query.debounce { debouncedWord ->
                 context?.let { viewModel.searchUser(debouncedWord, it) }
             }
         }
-
-        return binding.root
     }
 
     private fun handleErrorPlaceholder() {

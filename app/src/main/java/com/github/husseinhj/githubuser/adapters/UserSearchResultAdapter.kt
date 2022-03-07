@@ -10,8 +10,7 @@ import com.github.husseinhj.githubuser.R
 import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.views.viewholders.UserSearchResultViewHolder
 
-typealias OnUserCellClickedListener = (UserSimpleDetailsModel) -> Unit
-class UserSearchResultAdapter(private val dataset: List<UserSimpleDetailsModel>, private val clickListener: OnUserCellClickedListener):
+class UserSearchResultAdapter(private val dataset: List<UserSimpleDetailsModel>):
     BaseAdapter() {
 
     override fun getCount(): Int {
@@ -44,10 +43,9 @@ class UserSearchResultAdapter(private val dataset: List<UserSimpleDetailsModel>,
 
         rowView?.setUsername(resultModel.login ?: "")
         rowView?.setImageUrl(resultModel.avatarURL ?: "")
-        rowView?.userCellView?.setOnClickListener {
-            clickListener.invoke(resultModel)
-        }
+
         currentView.tag = rowView
+
         return currentView
     }
 }

@@ -32,18 +32,17 @@
                 />
 
             <GridView
-                android:clipToPadding="true"
                 android:layout_height="0sp"
                 android:layout_margin="@dimen/navigation_margin"
                 android:numColumns="auto_fit"
                 android:verticalSpacing="10sp"
-                android:fitsSystemWindows="true"
                 android:horizontalSpacing="10sp"
                 android:layout_width="match_parent"
                 android:id="@+id/search_result_grid_view"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:adapter="@{viewModel.resultAdapter}"
                 android:columnWidth="@dimen/search_row_width"
+                android:listSelector="@color/transparent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="@{viewModel.resultVisibility}"

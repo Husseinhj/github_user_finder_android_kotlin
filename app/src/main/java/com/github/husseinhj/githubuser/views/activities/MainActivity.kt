@@ -12,7 +12,7 @@ import com.github.husseinhj.githubuser.viewmodels.activities.MainActivityViewMod
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainActivityViewModel
-    val toolbarAppearance = ToolbarAppearance(this)
+    val toolbarAppearance = ToolbarAppearance(this, R.menu.main_menu)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        toolbarAppearance.configureEnableSearchBar(menu)
+        toolbarAppearance.configureSearchBarByMenu(menu)
 
         return super.onCreateOptionsMenu(menu)
     }

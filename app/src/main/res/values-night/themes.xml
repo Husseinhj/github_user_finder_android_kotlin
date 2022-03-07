@@ -4,10 +4,11 @@
         <!-- Primary brand color. -->
         <item name="text_color">@color/white</item>
         <item name="secondary_text_color">@color/cultured</item>
-        <item name="user_search_background">@color/raisin_black</item>
+        <item name="user_search_background">@color/eerie_black</item>
         <item name="user_search_cell_background">@color/black</item>
+        <item name="user_search_touched_cell_background">@color/eerie_black</item>
         <item name="colorPrimary">@color/magenta</item>
-        <item name="colorPrimaryVariant">@color/magenta</item>
+        <item name="colorPrimaryVariant">@color/eerie_black</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/dark_blue</item>
