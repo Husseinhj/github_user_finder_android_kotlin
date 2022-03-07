@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.extensions.navigateUp
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
-import com.github.husseinhj.githubuser.extensions.showSoftBackButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
 import com.github.husseinhj.githubuser.databinding.FragmentUserDetailBinding
@@ -36,8 +35,10 @@ class UserDetailFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        title = getString(R.string.user_profile_title)
-        this.toolbarAppearance?.setOnFocusListener {
+        this.enableBackButton(true)
+        this.setTitle(getString(R.string.user_profile_title))
+
+        this.setOnSearchBarFocusListener {
             if (cameFromDeeplink) {
                 this.navigateFromDetailToSearchFragment()
             } else {
@@ -68,12 +69,6 @@ class UserDetailFragment : BaseFragment() {
         usernameParam?.let { viewModel.getUserDetail(it) }
 
         return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        this.showSoftBackButton(true)
     }
 
     private fun hasDeeplinkIntent(it: Bundle) =

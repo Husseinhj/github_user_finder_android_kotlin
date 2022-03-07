@@ -23,7 +23,10 @@ class SearchUserFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        title = getString(R.string.user_search_title)
+
+        listenToSearchBarTextChanges()
+        this.enableBackButton(true)
+        this.setTitle(getString(R.string.user_search_title))
 
         if (::binding.isInitialized) {
             return binding.root
@@ -36,9 +39,12 @@ class SearchUserFragment : BaseFragment() {
             false
         )
 
-        viewModel = SearchUserViewModel()
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        binding.executePendingBindings()
+        viewModel.resultAdapter.observe(this) {
+            binding.searchResultGridView.deferNotifyDataSetChanged()
+        }
 
         handleErrorPlaceholder()
         binding.searchResultGridView.setOnItemClickListener { _, _, position, _ ->
@@ -49,13 +55,12 @@ class SearchUserFragment : BaseFragment() {
         return binding.root
     }
 
-        toolbarAppearance?.setOnTextChangedListener { query ->
+    private fun listenToSearchBarTextChanges() {
+        this.setOnSearchBarTextChangedListener { query ->
             query.debounce { debouncedWord ->
                 context?.let { viewModel.searchUser(debouncedWord, it) }
             }
         }
-
-        return binding.root
     }
 
     private fun handleErrorPlaceholder() {
