@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.github.husseinhj.githubuser.extensions.toString
 import com.github.husseinhj.githubuser.extensions.isoStringToDate
-import com.github.husseinhj.githubuser.models.data.UserDetailsResponseModel
+import com.github.husseinhj.githubuser.models.UserDetailsResponseModel
 import com.github.husseinhj.githubuser.services.repositories.UserRepository
 
 class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {

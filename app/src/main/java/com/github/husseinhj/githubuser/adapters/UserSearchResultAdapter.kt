@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.github.husseinhj.githubuser.R
-import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
+import com.github.husseinhj.githubuser.models.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.views.viewholders.UserSearchResultViewHolder
 
 class UserSearchResultAdapter(private val dataset: List<UserSimpleDetailsModel>):

@@ -1,4 +1,4 @@
-package com.github.husseinhj.githubuser.models.data
+package com.github.husseinhj.githubuser.models
 
 import com.google.gson.annotations.SerializedName
 
