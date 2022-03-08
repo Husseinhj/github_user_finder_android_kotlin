@@ -1,0 +1,73 @@
+{
+	"info": {
+		"_postman_id": "f3ef367d-1501-44c8-9f27-70492452b16a",
+		"name": "Github-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get user detail",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/vnd.github.v3+json"
+					}
+				],
+				"url": {
+					"raw": "https://api.github.com/users/:username",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"users",
+						":username"
+					],
+					"variable": [
+						{
+							"key": "username",
+							"value": "husseinhj"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/vnd.github.v3+json"
+					}
+				],
+				"url": {
+					"raw": "https://api.github.com/search/users?q=husseinhj",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"search",
+						"users"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "husseinhj"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
