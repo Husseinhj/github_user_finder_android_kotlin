@@ -26,7 +26,7 @@ The most important aspect of this project is handling the caching of all downloa
 implementation 'com.github.bumptech.glide:glide:4.13.1'
 ```
 
-## Android
+## UI
 For UIs, we used the Android default components.
 Our main reasons for choosing Android's navigation library were:
 Support for storing fragment states and restoring them
