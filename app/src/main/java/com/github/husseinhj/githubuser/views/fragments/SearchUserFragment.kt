@@ -76,13 +76,13 @@ class SearchUserFragment : BaseFragment() {
             when (errorType) {
                 ErrorEnumType.NETWORK -> {
                     showErrorPlaceholder(
-                        R.string.you_are_not_connected_to_internet,
+                        getString(R.string.you_are_not_connected_to_internet),
                         R.drawable.ic_wifi_off
                     )
                 }
                 ErrorEnumType.SERVER -> {
                     showErrorPlaceholder(
-                        R.string.server_error_message,
+                        getString(R.string.server_error_message, ""),
                         R.drawable.ic_error
                     )
                 }
@@ -95,9 +95,9 @@ class SearchUserFragment : BaseFragment() {
         }
     }
 
-    private fun showErrorPlaceholder(messageResId: Int, iconResId: Int) {
+    private fun showErrorPlaceholder(message: String, iconResId: Int) {
         binding.placeholderLayout.placeholderView.apply {
-            text = getString(messageResId)
+            text = message
         }
         binding.placeholderLayout.placeholderView.setCompoundDrawablesRelativeWithIntrinsicBounds(
             0,
