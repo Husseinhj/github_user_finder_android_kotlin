@@ -8,9 +8,9 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import com.github.husseinhj.githubuser.models.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.utils.InternetConnectivityUtil
 import com.github.husseinhj.githubuser.adapters.UserSearchResultAdapter
-import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.services.repositories.SearchRepository
 
 enum class ErrorEnumType {

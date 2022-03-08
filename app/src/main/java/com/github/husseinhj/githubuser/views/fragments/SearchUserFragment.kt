@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.extensions.debounce
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
-import com.github.husseinhj.githubuser.models.data.UserSimpleDetailsModel
+import com.github.husseinhj.githubuser.models.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.viewmodels.fragments.ErrorEnumType
 import com.github.husseinhj.githubuser.databinding.FragmentSearchUserBinding
 import com.github.husseinhj.githubuser.viewmodels.fragments.SearchUserViewModel
