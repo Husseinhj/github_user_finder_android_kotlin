@@ -36,6 +36,7 @@ class SearchUserFragment : BaseFragment() {
         this.setTitle(getString(R.string.user_search_title))
 
         if (::binding.isInitialized) {
+            feedBindingObject()
             return binding.root
         }
 
@@ -47,9 +48,7 @@ class SearchUserFragment : BaseFragment() {
             false
         )
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.executePendingBindings()
+        feedBindingObject()
         viewModel.resultAdapter.observe(this) {
             binding.searchResultGridView.deferNotifyDataSetChanged()
         }
@@ -61,6 +60,12 @@ class SearchUserFragment : BaseFragment() {
         }
 
         return binding.root
+    }
+
+    private fun feedBindingObject() {
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.executePendingBindings()
     }
 
     private fun listenToSearchBarTextChanges() {
