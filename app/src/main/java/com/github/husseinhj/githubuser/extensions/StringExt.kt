@@ -1,14 +1,21 @@
 package com.github.husseinhj.githubuser.extensions
 
+import java.util.*
+import java.lang.Exception
+import java.text.SimpleDateFormat
 import android.annotation.SuppressLint
 import com.github.husseinhj.githubuser.utils.AnyDebounce
 import com.github.husseinhj.githubuser.utils.SubscribeOnDebounced
-import java.text.SimpleDateFormat
-import java.util.*
 
 @SuppressLint("SimpleDateFormat")
-fun String.convertToDate(): Date? {
-    return SimpleDateFormat("yyyy-MM-dd").parse(this)
+fun String.isoStringToDate(): Date? {
+    try {
+        return SimpleDateFormat("yyyy-MM-dd").parse(this)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
+    return null
 }
 
 fun String?.debounce(subscribe: SubscribeOnDebounced) {

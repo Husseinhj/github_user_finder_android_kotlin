@@ -11,13 +11,15 @@
         style="@style/AppSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/you_are_not_connected_to_internet"
+        android:padding="@dimen/onboarding_margin"
         android:layout_margin="@dimen/default_margin"
         app:drawableTopCompat="@drawable/ic_wifi_off"
         android:drawablePadding="@dimen/default_margin"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/you_are_not_connected_to_internet"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
