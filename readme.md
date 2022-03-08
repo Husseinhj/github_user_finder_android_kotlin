@@ -4,9 +4,7 @@
 This project uses the Gradle build system. To build this project, use the `gradlew build` command or use "Import Project" in Android Studio.
 
 ## Screenshots:
-<img src="docs/home_dark_theme.png" style="width: 20%"/>
-<img src="docs/user_search.png" style="width: 20%"/>
-<img src="docs/user_profile.png" style="width: 20%"/>
+<img src="docs/home_dark_theme.png" style="width: 20%"/><img src="docs/user_search.png" style="width: 20%"/><img src="docs/user_profile.png" style="width: 20%"/>
 
 ## Features
 - Support Dark mode
