@@ -114,6 +114,11 @@ class SearchUserViewModel(private val state: SavedStateHandle): ViewModel() {
                         return@run
                     }
 
+                    if (dataset.isNullOrEmpty()) {
+                        showNowValuePlaceholder()
+                        return@run
+                    }
+
                     val adapter = UserSearchResultAdapter(dataset!!)
                     resultAdapter.value = adapter
 
