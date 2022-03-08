@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.github.husseinhj.githubuser.extensions.toString
-import com.github.husseinhj.githubuser.extensions.convertToDate
+import com.github.husseinhj.githubuser.extensions.isoStringToDate
 import com.github.husseinhj.githubuser.models.data.UserDetailsResponseModel
 import com.github.husseinhj.githubuser.services.repositories.UserRepository
 
@@ -97,7 +97,7 @@ class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {
                         userFollowing.value = following.toString()
                         userAvatarUrl.value = avatarURL.toString()
 
-                        val date = createdAt?.convertToDate()
+                        val date = createdAt?.isoStringToDate()
                         userJoinedAt.value = date?.toString("MMMM YYYY") ?: ""
 
                         userLocation.value = location
