@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.github.husseinhj.githubuser.viewmodels.fragments.HomeViewModel" />
@@ -16,92 +15,97 @@
         android:layout_height="match_parent"
         tools:context=".views.fragments.HomeFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
+            android:fillViewport="true"
+            tools:ignore="UselessParent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/user_search_background"
             >
 
-            <ImageView
-                android:layout_marginStart="-80sp"
-                android:src="@drawable/shape_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="@dimen/onboarding_margin"
-                android:contentDescription="@string/onboarding_background_shape" />
-
-            <ImageView
-                android:layout_marginEnd="-80sp"
-                android:src="@drawable/shape_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginTop="@dimen/onboarding_margin"
-                android:contentDescription="@string/onboarding_background_shape" />
-
-            <TextView
-                android:text="@string/_50_millions"
-                style="@style/AppContentBody"
-                android:gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:drawablePadding="@dimen/onboarding_margin"
-                app:drawableLeftCompat="@drawable/onboarding_sample_profile"
-                app:layout_constraintBottom_toTopOf="@id/onboarding_content_view"/>
-
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/onboarding_content_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                >
+                android:background="?attr/user_search_background">
 
-                <TextView
-                    style="@style/AppTitle"
-                    android:id="@+id/onboarding_title_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/on_boarding_title"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:layout_margin="@dimen/onboarding_margin" />
-
-                <TextView
-                    style="@style/AppSubtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/onboarding_desc_view"
-                    android:text="@string/onboarding_description"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginTop="@dimen/default_margin"
-                    android:layout_marginEnd="@dimen/onboarding_margin"
-                    android:layout_marginStart="@dimen/onboarding_margin"
-                    app:layout_constraintTop_toBottomOf="@id/onboarding_title_view" />
-
-                <Button
-                    android:id="@+id/call_to_action_button"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="-80sp"
+                    android:layout_marginTop="@dimen/onboarding_margin"
+                    android:contentDescription="@string/onboarding_background_shape"
+                    android:src="@drawable/shape_left"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/onboarding_margin"
+                    android:layout_marginEnd="-80sp"
+                    android:contentDescription="@string/onboarding_background_shape"
+                    android:src="@drawable/shape_right"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    style="@style/AppContentBody"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/onboarding_margin"
+                    android:gravity="center_vertical"
+                    android:text="@string/_50_millions"
+                    app:drawableLeftCompat="@drawable/onboarding_sample_profile"
+                    app:layout_constraintBottom_toTopOf="@id/onboarding_content_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/onboarding_content_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginTop="@dimen/onboarding_margin"
-                    android:text="@string/onboarding_cta_button_title"
-                    app:layout_constraintTop_toBottomOf="@id/onboarding_desc_view" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/onboarding_title_view"
+                        style="@style/AppTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/onboarding_margin"
+                        android:text="@string/on_boarding_title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/onboarding_desc_view"
+                        style="@style/AppSubtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/onboarding_margin"
+                        android:layout_marginTop="@dimen/default_margin"
+                        android:layout_marginEnd="@dimen/onboarding_margin"
+                        android:text="@string/onboarding_description"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/onboarding_title_view" />
+
+                    <Button
+                        android:id="@+id/call_to_action_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/onboarding_margin"
+                        android:text="@string/onboarding_cta_button_title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/onboarding_desc_view" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+        </ScrollView>
     </FrameLayout>
 
 </layout>

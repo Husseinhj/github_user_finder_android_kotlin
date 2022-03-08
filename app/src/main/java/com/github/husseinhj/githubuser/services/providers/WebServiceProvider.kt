@@ -7,9 +7,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-/*
-Providing our network clients with this provider is transparent to other classes so that they do not know which services we are using.
- */
 object WebServiceProvider {
 
     private fun getRetrofit(): Retrofit {

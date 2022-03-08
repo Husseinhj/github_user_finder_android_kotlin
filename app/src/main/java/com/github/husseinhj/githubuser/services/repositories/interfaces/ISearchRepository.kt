@@ -3,7 +3,7 @@ package com.github.husseinhj.githubuser.services.repositories.interfaces
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
-import com.github.husseinhj.githubuser.models.data.UserSearchResponseModel
+import com.github.husseinhj.githubuser.models.UserSearchResponseModel
 
 interface ISearchRepository {
 

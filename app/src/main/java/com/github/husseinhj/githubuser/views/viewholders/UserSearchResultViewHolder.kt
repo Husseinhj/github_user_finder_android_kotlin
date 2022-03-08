@@ -10,7 +10,6 @@ import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
 
 class UserSearchResultViewHolder(itemView: View)
     : RecyclerView.ViewHolder(itemView) {
-    val userCellView: View = itemView.findViewById(R.id.user_cell_view)
     private val imageView: ImageView = itemView.findViewById(R.id.image_view)
     private val usernameView: TextView = itemView.findViewById(R.id.username_view)
 

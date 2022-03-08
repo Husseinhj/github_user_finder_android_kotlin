@@ -6,6 +6,7 @@
         <item name="secondary_text_color">@color/raisin_black</item>
         <item name="user_search_background">@color/cultured</item>
         <item name="user_search_cell_background">@color/white</item>
+        <item name="user_search_touched_cell_background">@color/silver</item>
         <item name="colorPrimary">@color/magenta</item>
         <item name="colorPrimaryVariant">@color/magenta</item>
         <item name="colorOnPrimary">@color/white</item>

@@ -3,24 +3,25 @@ package com.github.husseinhj.githubuser.views.fragments
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.content.Intent
 import android.content.Context
+import android.widget.ImageView
 import android.view.LayoutInflater
 import com.github.husseinhj.githubuser.R
 import androidx.databinding.DataBindingUtil
 import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.extensions.navigateUp
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
-import com.github.husseinhj.githubuser.extensions.showSoftBackButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
+import com.github.husseinhj.githubuser.consts.ANDROID_DEEPLINK_INTENT_KEY
 import com.github.husseinhj.githubuser.databinding.FragmentUserDetailBinding
 import com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModel
 
 class UserDetailFragment : BaseFragment() {
     private var usernameParam: String? = null
     private var cameFromDeeplink: Boolean = false
-    private var viewModel = UserDetailViewModel()
+    private lateinit var viewModel: UserDetailViewModel
     private lateinit var binding: FragmentUserDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,14 +31,27 @@ class UserDetailFragment : BaseFragment() {
             usernameParam = it.getString(GITHUB_USERNAME)
             cameFromDeeplink = hasDeeplinkIntent(it)
         }
+
+        if (usernameParam == null && cameFromDeeplink) {
+            usernameParam = getUsernameFromDeepLinkIntentAsFallback(arguments)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if(::viewModel.isInitialized)
+            viewModel.saveState()
+
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        title = getString(R.string.user_profile_title)
-        this.toolbarAppearance?.setOnFocusListener {
+        this.enableBackButton(true)
+        this.setTitle(getString(R.string.user_profile_title))
+
+        this.setOnSearchBarFocusListener {
             if (cameFromDeeplink) {
                 this.navigateFromDetailToSearchFragment()
             } else {
@@ -49,6 +63,7 @@ class UserDetailFragment : BaseFragment() {
             return binding.root
         }
 
+        viewModel = this.getSavedStateViewModel(UserDetailViewModel::class.java)
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_user_detail,
@@ -60,9 +75,16 @@ class UserDetailFragment : BaseFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.serverErrorMessage.observe(this) { message ->
+            if (message == null) {
+                return@observe
+            }
+
             context?.let { showErrorAlert(message, it) }
         }
         viewModel.userAvatarUrl.observe(this) { avatarUrl ->
+            if (avatarUrl == null) {
+                return@observe
+            }
             applyImageToView(avatarUrl, binding.userAvatarView)
         }
         usernameParam?.let { viewModel.getUserDetail(it) }
@@ -70,14 +92,18 @@ class UserDetailFragment : BaseFragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun getUsernameFromDeepLinkIntentAsFallback(arg: Bundle?): String? {
+        val intent = arg?.get(ANDROID_DEEPLINK_INTENT_KEY) as? Intent
+        val paths = intent?.data?.path?.split("/")
+        if ((paths?.size ?: 0) > 1) {
+            return paths?.get(1)
+        }
 
-        this.showSoftBackButton(true)
+        return null
     }
 
     private fun hasDeeplinkIntent(it: Bundle) =
-        it.containsKey("android-support-nav:controller:deepLinkIntent")
+        it.containsKey(ANDROID_DEEPLINK_INTENT_KEY)
 
     private fun showErrorAlert(errorMessage: String?, context: Context) {
         MaterialAlertDialogBuilder(context)

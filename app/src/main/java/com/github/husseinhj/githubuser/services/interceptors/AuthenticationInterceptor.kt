@@ -1,7 +1,9 @@
 package com.github.husseinhj.githubuser.services.interceptors
 
 import okhttp3.Response
+import okhttp3.Protocol
 import okhttp3.Interceptor
+import okhttp3.ResponseBody.Companion.toResponseBody
 
 class AuthenticationInterceptor : Interceptor {
 
@@ -17,7 +19,19 @@ class AuthenticationInterceptor : Interceptor {
         val requestBuilder = original.newBuilder().url(authenticatedUrl)
         val request = requestBuilder.build()
 
-        return chain.proceed(request)
+        return try {
+            chain.proceed(request)
+        } catch (e: Exception) {
+            e.printStackTrace()
+
+            Response.Builder()
+                .request(chain.request())
+                .protocol(Protocol.HTTP_1_1)
+                .code(500)
+                .message(e.message ?: "Unknown error happen.")
+                .body(e.cause.toString().toResponseBody(null))
+                .build()
+        }
     }
 
 }
