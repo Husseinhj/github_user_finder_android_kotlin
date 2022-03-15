@@ -4,11 +4,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.awaitResponse
 import com.github.husseinhj.githubuser.models.UserDetailsResponseModel
-import com.github.husseinhj.githubuser.services.providers.WebServiceProvider
 import com.github.husseinhj.githubuser.services.repositories.interfaces.IUserRepository
 
-object UserRepository {
-    private val userRepoService: IUserRepository = WebServiceProvider.createService(IUserRepository::class.java)
+class UserRepository(private val userRepoService: IUserRepository) {
 
     fun getUserDetailAsync(username: String, callback: Callback<UserDetailsResponseModel>) {
         val serviceCall = userRepoService.getUserDetail(username)

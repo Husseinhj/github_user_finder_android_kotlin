@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import com.github.husseinhj.githubuser.R
 import androidx.databinding.DataBindingUtil
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.databinding.FragmentHomeBinding
 import com.github.husseinhj.githubuser.viewmodels.fragments.HomeViewModel
 
 class HomeFragment : BaseFragment() {
 
-    private val viewModel = HomeViewModel()
     private lateinit var binding: FragmentHomeBinding
+    private val homeViewModel: HomeViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +34,7 @@ class HomeFragment : BaseFragment() {
             false
         )
 
-        binding.viewModel = viewModel
+        binding.viewModel = homeViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.callToActionButton.setOnClickListener {

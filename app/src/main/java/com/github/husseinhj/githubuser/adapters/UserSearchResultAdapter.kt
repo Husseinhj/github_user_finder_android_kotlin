@@ -1,11 +1,11 @@
 package com.github.husseinhj.githubuser.adapters
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.content.Context
 import android.widget.BaseAdapter
+import android.view.LayoutInflater
+import android.annotation.SuppressLint
 import com.github.husseinhj.githubuser.R
 import com.github.husseinhj.githubuser.models.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.views.viewholders.UserSearchResultViewHolder
