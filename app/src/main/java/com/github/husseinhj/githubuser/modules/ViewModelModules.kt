@@ -4,6 +4,7 @@ import org.koin.dsl.module
 import org.koin.androidx.viewmodel.dsl.viewModel
 import com.github.husseinhj.githubuser.viewmodels.fragments.HomeViewModel
 import com.github.husseinhj.githubuser.viewmodels.fragments.SearchUserViewModel
+import com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModel
 import com.github.husseinhj.githubuser.viewmodels.activities.MainActivityViewModel
 
 val viewModelModules = module {
@@ -20,5 +21,10 @@ val viewModelModules = module {
     // Search User ViewModel
     viewModel {
         SearchUserViewModel(get(), get())
+    }
+
+    // User Profile ViewModel
+    viewModel {
+        UserDetailViewModel(get(), get())
     }
 }

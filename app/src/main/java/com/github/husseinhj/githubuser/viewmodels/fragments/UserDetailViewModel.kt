@@ -12,7 +12,10 @@ import com.github.husseinhj.githubuser.extensions.isoStringToDate
 import com.github.husseinhj.githubuser.models.UserDetailsResponseModel
 import com.github.husseinhj.githubuser.services.repositories.UserRepository
 
-class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {
+class UserDetailViewModel(
+    private val state: SavedStateHandle,
+    private val userRepository: UserRepository
+): ViewModel() {
 
     val serverErrorMessage: MutableLiveData<String> by lazy {
         MutableLiveData<String>(state[::serverErrorMessage.name])
@@ -83,7 +86,7 @@ class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {
     fun getUserDetail(userId: String) {
         loadingVisibility.value = View.VISIBLE
 
-        UserRepository.getUserDetailAsync(userId, object: Callback<UserDetailsResponseModel> {
+        userRepository.getUserDetailAsync(userId, object: Callback<UserDetailsResponseModel> {
             override fun onResponse(
                 call: Call<UserDetailsResponseModel>,
                 response: Response<UserDetailsResponseModel>,
@@ -98,7 +101,7 @@ class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {
                         userAvatarUrl.value = avatarURL.toString()
 
                         val date = createdAt?.isoStringToDate()
-                        userJoinedAt.value = date?.toString("MMMM YYYY") ?: ""
+                        userJoinedAt.value = date?.toString("MMMM yyyy") ?: ""
 
                         userLocation.value = location
                         locationVisibility.value = if (location.isNullOrBlank()) View.GONE else View.VISIBLE
