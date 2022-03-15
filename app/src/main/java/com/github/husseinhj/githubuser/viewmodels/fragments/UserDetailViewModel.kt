@@ -60,7 +60,7 @@ class UserDetailViewModel(
         MutableLiveData<Int>(state[::emailVisibility.name] ?: View.GONE)
     }
     val loadingVisibility: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>(state[::loadingVisibility.name] ?: View.VISIBLE)
+        MutableLiveData<Int>(state[::loadingVisibility.name] ?: View.GONE)
     }
 
     fun saveState() {
@@ -100,17 +100,10 @@ class UserDetailViewModel(
                         userFollowing.value = following.toString()
                         userAvatarUrl.value = avatarURL.toString()
 
-                        val date = createdAt?.isoStringToDate()
-                        userJoinedAt.value = date?.toString("MMMM yyyy") ?: ""
-
-                        userLocation.value = location
-                        locationVisibility.value = if (location.isNullOrBlank()) View.GONE else View.VISIBLE
-
-                        userCompany.value = company
-                        companyVisibility.value = if (company.isNullOrBlank()) View.GONE else View.VISIBLE
-
-                        userEmail.value = email
-                        emailVisibility.value = if (email.isNullOrBlank()) View.GONE else View.VISIBLE
+                        applyEmailState(email)
+                        applyJointState(createdAt)
+                        applyLocationState(location)
+                        applyCompanyNameState(company)
                     }
                 }
 
@@ -123,5 +116,25 @@ class UserDetailViewModel(
             }
 
         })
+    }
+
+    private fun applyJointState(createdAt: String?) {
+        val date = createdAt?.isoStringToDate()
+        userJoinedAt.value = date?.toString("MMMM yyyy") ?: ""
+    }
+
+    private fun applyLocationState(location: String?) {
+        userLocation.value = location
+        locationVisibility.value = if (location.isNullOrBlank()) View.GONE else View.VISIBLE
+    }
+
+    private fun applyCompanyNameState(company: String?) {
+        userCompany.value = company
+        companyVisibility.value = if (company.isNullOrBlank()) View.GONE else View.VISIBLE
+    }
+
+    private fun applyEmailState(email: String?) {
+        userEmail.value = email
+        emailVisibility.value = if (email.isNullOrBlank()) View.GONE else View.VISIBLE
     }
 }

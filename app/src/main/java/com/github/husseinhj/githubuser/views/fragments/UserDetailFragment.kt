@@ -31,8 +31,8 @@ class UserDetailFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            usernameParam = it.getString(GITHUB_USERNAME)
             cameFromDeeplink = hasDeeplinkIntent(it)
+            usernameParam = it.getString(GITHUB_USERNAME)
         }
 
         if (usernameParam == null && cameFromDeeplink) {
