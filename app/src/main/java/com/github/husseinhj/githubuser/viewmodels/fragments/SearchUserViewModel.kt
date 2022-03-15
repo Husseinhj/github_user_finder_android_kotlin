@@ -19,7 +19,10 @@ enum class ErrorEnumType {
     SERVER
 }
 
-class SearchUserViewModel(private val state: SavedStateHandle): ViewModel() {
+class SearchUserViewModel(
+    private val state: SavedStateHandle,
+    private val searchRepository: SearchRepository
+    ): ViewModel() {
 
     private var searchJob: Job? = null
     var dataset: List<UserSimpleDetailsModel>? = null
@@ -101,7 +104,7 @@ class SearchUserViewModel(private val state: SavedStateHandle): ViewModel() {
         emptyResultVisibility.value = View.GONE
 
         searchJob = CoroutineScope(Dispatchers.IO).launch {
-            val result = SearchRepository.searchUser(validatedSearchQuery)
+            val result = searchRepository.searchUser(validatedSearchQuery)
             withContext(Dispatchers.Main) {
                 run {
                     loadingVisibility.value = View.GONE
