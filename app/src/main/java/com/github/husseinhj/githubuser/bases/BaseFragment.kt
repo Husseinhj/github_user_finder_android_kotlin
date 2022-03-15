@@ -2,11 +2,8 @@ package com.github.husseinhj.githubuser.bases
 
 import android.os.Bundle
 import android.content.Context
-import androidx.lifecycle.ViewModel
 import androidx.fragment.app.Fragment
 import com.github.husseinhj.githubuser.R
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.SavedStateViewModelFactory
 import com.github.husseinhj.githubuser.extensions.navigate
 import com.github.husseinhj.githubuser.utils.ToolbarAppearance
 import com.github.husseinhj.githubuser.utils.OnTextChangedListener
@@ -35,11 +32,6 @@ open class BaseFragment: Fragment() {
         toolbarAppearance?.setOnTextChangedListener {
             this.searchBarTextChanged?.invoke(it)
         }
-    }
-
-    internal fun <T : ViewModel> getSavedStateViewModel(modelClass: Class<T>): T {
-        val savedStateVM = SavedStateViewModelFactory(null, this)
-        return ViewModelProvider(this, savedStateVM)[modelClass]
     }
 
     fun setOnSearchBarFocusListener(listener: OnFocusChangedListener) {
