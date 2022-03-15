@@ -12,7 +12,10 @@ import com.github.husseinhj.githubuser.extensions.isoStringToDate
 import com.github.husseinhj.githubuser.models.UserDetailsResponseModel
 import com.github.husseinhj.githubuser.services.repositories.UserRepository
 
-class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {
+class UserDetailViewModel(
+    private val state: SavedStateHandle,
+    private val userRepository: UserRepository
+): ViewModel() {
 
     val serverErrorMessage: MutableLiveData<String> by lazy {
         MutableLiveData<String>(state[::serverErrorMessage.name])
@@ -57,7 +60,7 @@ class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {
         MutableLiveData<Int>(state[::emailVisibility.name] ?: View.GONE)
     }
     val loadingVisibility: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>(state[::loadingVisibility.name] ?: View.VISIBLE)
+        MutableLiveData<Int>(state[::loadingVisibility.name] ?: View.GONE)
     }
 
     fun saveState() {
@@ -83,7 +86,7 @@ class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {
     fun getUserDetail(userId: String) {
         loadingVisibility.value = View.VISIBLE
 
-        UserRepository.getUserDetailAsync(userId, object: Callback<UserDetailsResponseModel> {
+        userRepository.getUserDetailAsync(userId, object: Callback<UserDetailsResponseModel> {
             override fun onResponse(
                 call: Call<UserDetailsResponseModel>,
                 response: Response<UserDetailsResponseModel>,
@@ -97,17 +100,10 @@ class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {
                         userFollowing.value = following.toString()
                         userAvatarUrl.value = avatarURL.toString()
 
-                        val date = createdAt?.isoStringToDate()
-                        userJoinedAt.value = date?.toString("MMMM YYYY") ?: ""
-
-                        userLocation.value = location
-                        locationVisibility.value = if (location.isNullOrBlank()) View.GONE else View.VISIBLE
-
-                        userCompany.value = company
-                        companyVisibility.value = if (company.isNullOrBlank()) View.GONE else View.VISIBLE
-
-                        userEmail.value = email
-                        emailVisibility.value = if (email.isNullOrBlank()) View.GONE else View.VISIBLE
+                        applyEmailState(email)
+                        applyJointState(createdAt)
+                        applyLocationState(location)
+                        applyCompanyNameState(company)
                     }
                 }
 
@@ -120,5 +116,25 @@ class UserDetailViewModel(private val state: SavedStateHandle): ViewModel() {
             }
 
         })
+    }
+
+    private fun applyJointState(createdAt: String?) {
+        val date = createdAt?.isoStringToDate()
+        userJoinedAt.value = date?.toString("MMMM yyyy") ?: ""
+    }
+
+    private fun applyLocationState(location: String?) {
+        userLocation.value = location
+        locationVisibility.value = if (location.isNullOrBlank()) View.GONE else View.VISIBLE
+    }
+
+    private fun applyCompanyNameState(company: String?) {
+        userCompany.value = company
+        companyVisibility.value = if (company.isNullOrBlank()) View.GONE else View.VISIBLE
+    }
+
+    private fun applyEmailState(email: String?) {
+        userEmail.value = email
+        emailVisibility.value = if (email.isNullOrBlank()) View.GONE else View.VISIBLE
     }
 }

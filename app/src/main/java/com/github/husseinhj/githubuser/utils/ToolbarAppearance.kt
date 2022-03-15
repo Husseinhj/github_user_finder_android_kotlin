@@ -1,14 +1,13 @@
 package com.github.husseinhj.githubuser.utils
 
 import android.view.Menu
+import android.app.Activity
 import android.view.MenuItem
 import android.content.Context
 import android.app.SearchManager
 import android.annotation.SuppressLint
 import com.github.husseinhj.githubuser.R
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.app.AppCompatActivity
-import com.github.husseinhj.githubuser.extensions.showSoftBackButton
 
 typealias OnTextChangedListener = (String?) -> Unit
 typealias OnFocusChangedListener = (Boolean) -> Unit
@@ -46,19 +45,11 @@ typealias OnFocusChangedListener = (Boolean) -> Unit
  * </p>
  *
  */
-class ToolbarAppearance(private val activity: AppCompatActivity, private val menuResId: Int) {
+class ToolbarAppearance(private val activity: Activity, private val menuResId: Int) {
 
     private var searchView: SearchView? = null
     private var focusListener: OnFocusChangedListener? = null
     private var textChangedListener: OnTextChangedListener? = null
-
-    fun setShowBackSoftButton(show: Boolean) {
-        activity.showSoftBackButton(show)
-    }
-
-    fun setTitle(title: String?) {
-        activity.supportActionBar?.title = title
-    }
 
     fun setOnFocusListener(listener: OnFocusChangedListener?) {
         this.focusListener = listener

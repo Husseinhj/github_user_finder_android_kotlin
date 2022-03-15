@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.extensions.navigateUp
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
 import com.github.husseinhj.githubuser.consts.ANDROID_DEEPLINK_INTENT_KEY
@@ -21,15 +22,17 @@ import com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModel
 class UserDetailFragment : BaseFragment() {
     private var usernameParam: String? = null
     private var cameFromDeeplink: Boolean = false
-    private lateinit var viewModel: UserDetailViewModel
     private lateinit var binding: FragmentUserDetailBinding
+    private val profileViewModel by stateViewModel<UserDetailViewModel>(
+        state = { arguments ?: Bundle.EMPTY }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            usernameParam = it.getString(GITHUB_USERNAME)
             cameFromDeeplink = hasDeeplinkIntent(it)
+            usernameParam = it.getString(GITHUB_USERNAME)
         }
 
         if (usernameParam == null && cameFromDeeplink) {
@@ -38,8 +41,7 @@ class UserDetailFragment : BaseFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if(::viewModel.isInitialized)
-            viewModel.saveState()
+        profileViewModel.saveState()
 
         super.onSaveInstanceState(outState)
     }
@@ -63,7 +65,6 @@ class UserDetailFragment : BaseFragment() {
             return binding.root
         }
 
-        viewModel = this.getSavedStateViewModel(UserDetailViewModel::class.java)
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_user_detail,
@@ -71,23 +72,23 @@ class UserDetailFragment : BaseFragment() {
             false
         )
 
-        binding.viewModel = viewModel
+        binding.viewModel = profileViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.serverErrorMessage.observe(this) { message ->
+        profileViewModel.serverErrorMessage.observe(this) { message ->
             if (message == null) {
                 return@observe
             }
 
             context?.let { showErrorAlert(message, it) }
         }
-        viewModel.userAvatarUrl.observe(this) { avatarUrl ->
+        profileViewModel.userAvatarUrl.observe(this) { avatarUrl ->
             if (avatarUrl == null) {
                 return@observe
             }
             applyImageToView(avatarUrl, binding.userAvatarView)
         }
-        usernameParam?.let { viewModel.getUserDetail(it) }
+        usernameParam?.let { profileViewModel.getUserDetail(it) }
 
         return binding.root
     }
