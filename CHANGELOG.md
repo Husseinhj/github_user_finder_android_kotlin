@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# v1.2.1 (vc-4)
+- Inject all dependencies to guest classes.
+- Fixed crash when converting date format with `YYYY` in Android below 6 and Java version 7.
+- Refactor `ToolbarAppearance` class end extracted to another class as a `NavigationAppearance` class to manage the title and soft back button.
+
 # v1.2 (vc-3)
 - Improved Dark mode colors
 - Improved animation of search results when users touch the screen
