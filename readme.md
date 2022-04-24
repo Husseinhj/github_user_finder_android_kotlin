@@ -31,6 +31,5 @@ For reviewing which dependencies are used and the reason explained [here](docs/d
 
 ## Future works
 
-- Using Dependency Injection (Koin, Dagger)
 - Setup Github action as CI/CD
 - Add more test cases

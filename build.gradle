@@ -8,3 +8,10 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    coroutines_version = '1.6.0'
+    koin_version = '3.2.0-beta-1'
+    nav_version = '2.5.0-alpha03'
+    android_lifecycle_version = '2.5.0-alpha04'
+}

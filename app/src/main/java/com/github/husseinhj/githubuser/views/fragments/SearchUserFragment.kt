@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.extensions.debounce
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import com.github.husseinhj.githubuser.models.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.viewmodels.fragments.ErrorEnumType
 import com.github.husseinhj.githubuser.databinding.FragmentSearchUserBinding
@@ -16,12 +17,13 @@ import com.github.husseinhj.githubuser.viewmodels.fragments.SearchUserViewModel
 
 class SearchUserFragment : BaseFragment() {
 
-    private lateinit var viewModel: SearchUserViewModel
     private lateinit var binding: FragmentSearchUserBinding
+    private val searchUserViewModel by stateViewModel<SearchUserViewModel>(
+        state = { arguments ?: Bundle.EMPTY }
+    )
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if(::viewModel.isInitialized)
-            viewModel.saveState()
+        searchUserViewModel.saveState()
 
         super.onSaveInstanceState(outState)
     }
@@ -40,7 +42,6 @@ class SearchUserFragment : BaseFragment() {
             return binding.root
         }
 
-        viewModel = getSavedStateViewModel(SearchUserViewModel::class.java)
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_search_user,
@@ -49,13 +50,13 @@ class SearchUserFragment : BaseFragment() {
         )
 
         feedBindingObject()
-        viewModel.resultAdapter.observe(this) {
+        searchUserViewModel.resultAdapter.observe(this) {
             binding.searchResultGridView.deferNotifyDataSetChanged()
         }
 
         handleErrorPlaceholder()
         binding.searchResultGridView.setOnItemClickListener { _, _, position, _ ->
-            val model = viewModel.dataset?.get(position)
+            val model = searchUserViewModel.dataset?.get(position)
             model?.let { navigateToUserDetail(it) }
         }
 
@@ -63,7 +64,7 @@ class SearchUserFragment : BaseFragment() {
     }
 
     private fun feedBindingObject() {
-        binding.viewModel = viewModel
+        binding.viewModel = searchUserViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
     }
@@ -71,13 +72,13 @@ class SearchUserFragment : BaseFragment() {
     private fun listenToSearchBarTextChanges() {
         this.setOnSearchBarTextChangedListener { query ->
             query.debounce { debouncedWord ->
-                context?.let { viewModel.searchUser(debouncedWord, it) }
+                context?.let { searchUserViewModel.searchUser(debouncedWord, it) }
             }
         }
     }
 
     private fun handleErrorPlaceholder() {
-        viewModel.errorType.observe(this) { errorType ->
+        searchUserViewModel.errorType.observe(this) { errorType ->
             when (errorType) {
                 ErrorEnumType.NETWORK -> {
                     showErrorPlaceholder(
@@ -95,7 +96,7 @@ class SearchUserFragment : BaseFragment() {
             }
         }
 
-        viewModel.errorPlaceholderVisibility.observe(this) {
+        searchUserViewModel.errorPlaceholderVisibility.observe(this) {
             binding.placeholderLayout.root.visibility = it
         }
     }
