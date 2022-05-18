@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.*
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.github.husseinhj.githubuser.models.UserSimpleDetailsModel
@@ -103,41 +104,36 @@ class SearchUserViewModel(
         loadingVisibility.value = View.VISIBLE
         emptyResultVisibility.value = View.GONE
 
-        searchJob = CoroutineScope(Dispatchers.IO).launch {
+        searchJob = viewModelScope.launch {
             val result = searchRepository.searchUser(validatedSearchQuery)
-            withContext(Dispatchers.Main) {
-                run {
-                    loadingVisibility.value = View.GONE
-                    dataset = result.body()?.items
-                    if (!result.isSuccessful) {
-                        showNowValuePlaceholder()
-                        errorType.value = ErrorEnumType.SERVER
-                        errorPlaceholderVisibility.value = View.VISIBLE
-
-                        return@run
-                    }
-
-                    if (dataset.isNullOrEmpty()) {
-                        showNowValuePlaceholder()
-                        return@run
-                    }
-
-                    val adapter = UserSearchResultAdapter(dataset!!)
-                    resultAdapter.value = adapter
-
-                    errorType.value = ErrorEnumType.NONE
-                    resultVisibility.value = View.VISIBLE
-                    emptyResultVisibility.value = View.GONE
-                    errorPlaceholderVisibility.value = View.GONE
-                }
+            loadingVisibility.postValue(View.GONE)
+            dataset = result.body()?.items
+            if (!result.isSuccessful) {
+                showNowValuePlaceholder()
+                errorType.postValue(ErrorEnumType.SERVER)
+                errorPlaceholderVisibility.postValue(View.VISIBLE)
+                return@launch
             }
+
+            if (dataset.isNullOrEmpty()) {
+                showNowValuePlaceholder()
+                return@launch
+            }
+
+            val adapter = UserSearchResultAdapter(dataset!!)
+            resultAdapter.postValue(adapter)
+
+            errorType.postValue(ErrorEnumType.NONE)
+            resultVisibility.postValue(View.VISIBLE)
+            emptyResultVisibility.postValue(View.GONE)
+            errorPlaceholderVisibility.postValue(View.GONE)
         }
     }
 
     private fun showNowValuePlaceholder() {
-        resultAdapter.value = null
-        loadingVisibility.value = View.GONE
-        emptyResultVisibility.value = View.VISIBLE
+        resultAdapter.postValue(null)
+        loadingVisibility.postValue(View.GONE)
+        emptyResultVisibility.postValue(View.VISIBLE)
     }
 
     private fun removeSpaceAndLowercase(query: String) = query

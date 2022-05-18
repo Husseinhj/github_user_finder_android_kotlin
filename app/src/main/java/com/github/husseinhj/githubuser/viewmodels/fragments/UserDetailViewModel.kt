@@ -4,7 +4,9 @@ import retrofit2.Call
 import android.view.View
 import retrofit2.Callback
 import retrofit2.Response
+import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.github.husseinhj.githubuser.extensions.toString
@@ -86,55 +88,57 @@ class UserDetailViewModel(
     fun getUserDetail(userId: String) {
         loadingVisibility.value = View.VISIBLE
 
-        userRepository.getUserDetailAsync(userId, object: Callback<UserDetailsResponseModel> {
-            override fun onResponse(
-                call: Call<UserDetailsResponseModel>,
-                response: Response<UserDetailsResponseModel>,
-            ) {
-                if (response.isSuccessful) {
-                    response.body()?.apply {
-                        fullName.value = name
-                        username.value = "@$login"
-                        userBio.value = bio ?: ""
-                        userFollowers.value = followers.toString()
-                        userFollowing.value = following.toString()
-                        userAvatarUrl.value = avatarURL.toString()
+        viewModelScope.launch {
+            userRepository.getUserDetailAsync(userId, object: Callback<UserDetailsResponseModel> {
+                override fun onResponse(
+                    call: Call<UserDetailsResponseModel>,
+                    response: Response<UserDetailsResponseModel>,
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.apply {
+                            fullName.postValue(name)
+                            username.postValue("@$login")
+                            userBio.postValue(bio ?: "")
+                            userFollowers.postValue(followers.toString())
+                            userFollowing.postValue(following.toString())
+                            userAvatarUrl.postValue(avatarURL.toString())
 
-                        applyEmailState(email)
-                        applyJointState(createdAt)
-                        applyLocationState(location)
-                        applyCompanyNameState(company)
+                            applyEmailState(email)
+                            applyJointState(createdAt)
+                            applyLocationState(location)
+                            applyCompanyNameState(company)
+                        }
                     }
+
+                    loadingVisibility.postValue(View.GONE)
                 }
 
-                loadingVisibility.value = View.GONE
-            }
+                override fun onFailure(call: Call<UserDetailsResponseModel>, t: Throwable) {
+                    loadingVisibility.postValue(View.GONE)
+                    serverErrorMessage.postValue(t.localizedMessage ?: "Unknown error")
+                }
 
-            override fun onFailure(call: Call<UserDetailsResponseModel>, t: Throwable) {
-                loadingVisibility.value = View.GONE
-                serverErrorMessage.value = t.localizedMessage ?: "Unknown error"
-            }
-
-        })
+            })
+        }
     }
 
     private fun applyJointState(createdAt: String?) {
         val date = createdAt?.isoStringToDate()
-        userJoinedAt.value = date?.toString("MMMM yyyy") ?: ""
+        userJoinedAt.postValue(date?.toString("MMMM yyyy") ?: "")
     }
 
     private fun applyLocationState(location: String?) {
-        userLocation.value = location
-        locationVisibility.value = if (location.isNullOrBlank()) View.GONE else View.VISIBLE
+        userLocation.postValue(location)
+        locationVisibility.postValue(if (location.isNullOrBlank()) View.GONE else View.VISIBLE)
     }
 
     private fun applyCompanyNameState(company: String?) {
-        userCompany.value = company
-        companyVisibility.value = if (company.isNullOrBlank()) View.GONE else View.VISIBLE
+        userCompany.postValue(company)
+        companyVisibility.postValue(if (company.isNullOrBlank()) View.GONE else View.VISIBLE)
     }
 
     private fun applyEmailState(email: String?) {
-        userEmail.value = email
-        emailVisibility.value = if (email.isNullOrBlank()) View.GONE else View.VISIBLE
+        userEmail.postValue(email)
+        emailVisibility.postValue(if (email.isNullOrBlank()) View.GONE else View.VISIBLE)
     }
 }
