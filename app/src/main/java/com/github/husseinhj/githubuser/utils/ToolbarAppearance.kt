@@ -47,6 +47,7 @@ typealias OnFocusChangedListener = (Boolean) -> Unit
  */
 class ToolbarAppearance(private val activity: Activity, private val menuResId: Int) {
 
+    private var preventFirstTimeQueryCall: Boolean = true
     private var searchView: SearchView? = null
     private var focusListener: OnFocusChangedListener? = null
     private var textChangedListener: OnTextChangedListener? = null
@@ -105,6 +106,7 @@ class ToolbarAppearance(private val activity: Activity, private val menuResId: I
             }
         }
 
+        this.preventFirstTimeQueryCall = true
         searchView?.setOnQueryTextListener(getOnTextChangeListenerImp())
     }
 
@@ -118,6 +120,10 @@ class ToolbarAppearance(private val activity: Activity, private val menuResId: I
             @SuppressLint("CheckResult")
             override fun onQueryTextChange(newText: String?): Boolean {
                 try {
+                    if (preventFirstTimeQueryCall && newText.isNullOrEmpty()) {
+                        preventFirstTimeQueryCall = false
+                        return true
+                    }
                     this@ToolbarAppearance.textChangedListener?.invoke(newText)
                 } catch (e: Exception) {
                     println("Exception happen during call OnTextChangedListener with ${e.message}")

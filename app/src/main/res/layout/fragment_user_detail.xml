@@ -1,99 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.fragments.UserDetailFragment">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModel" />
-    </data>
-
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".views.fragments.UserDetailFragment">
+        android:fillViewport="true"
+        tools:ignore="UselessParent">
 
-        <ScrollView
-            android:fillViewport="true"
-            tools:ignore="UselessParent"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <ImageView
+                android:id="@+id/user_avatar_view"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="@dimen/default_margin"
+                android:contentDescription="@string/user_avatar"
+                android:src="@drawable/ic_person_placeholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/user_full_name_view"
+                style="@style/AppTitle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_avatar_view" />
 
-                <ImageView
-                    android:id="@+id/user_avatar_view"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_margin="@dimen/default_margin"
-                    android:contentDescription="@string/user_avatar"
-                    android:src="@drawable/ic_person_placeholder"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/username_view"
+                style="@style/AppSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
+
+            <TextView
+                android:id="@+id/user_bio_view"
+                style="@style/AppContentBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/username_view" />
+
+            <LinearLayout
+                android:id="@+id/user_connection_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_bio_view">
 
                 <TextView
-                    android:id="@+id/user_full_name_view"
-                    style="@style/AppTitle"
-                    android:textAlignment="center"
-                    android:layout_width="match_parent"
+                    android:id="@+id/followers_view"
+                    style="@style/AppValueDescription"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin"
-                    android:text="@{viewModel.fullName}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/user_avatar_view" />
-
-                <TextView
-                    android:id="@+id/username_view"
-                    style="@style/AppSubtitle"
-                    android:textAlignment="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin"
-                    android:text="@{viewModel.username}"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:drawablePadding="@dimen/default_margin"
+                    app:drawableStartCompat="@drawable/ic_following_people"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
 
                 <TextView
-                    android:id="@+id/user_bio_view"
-                    style="@style/AppContentBody"
-                    android:layout_width="match_parent"
+                    style="@style/AppContentDescription"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin"
-                    android:textAlignment="center"
-                    android:text="@{viewModel.userBio}"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:text="@string/followers"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/username_view" />
+                    app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
+
+                <TextView
+                    style="@style/AppValueDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:text="@string/separation_char"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
+
+                <TextView
+                    android:id="@+id/following_view"
+                    style="@style/AppValueDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
+
+                <TextView
+                    style="@style/AppContentDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:text="@string/following"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_connection_view">
 
                 <LinearLayout
-                    android:id="@+id/user_connection_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/user_bio_view">
-
-                    <TextView
-                        style="@style/AppValueDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/default_margin"
-                        android:drawablePadding="@dimen/default_margin"
-                        android:text="@{viewModel.userFollowers}"
-                        app:drawableStartCompat="@drawable/ic_following_people"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
+                    android:layout_marginTop="@dimen/half_default_margin"
+                    android:layout_marginBottom="@dimen/half_default_margin"
+                    android:orientation="horizontal">
 
                     <TextView
                         style="@style/AppContentDescription"
@@ -101,147 +147,84 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/default_margin"
                         android:layout_marginEnd="@dimen/default_margin"
-                        android:text="@string/followers"
+                        android:drawablePadding="@dimen/default_margin"
+                        android:text="@string/joined"
+                        app:drawableStartCompat="@drawable/ic_calendar"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
 
                     <TextView
+                        android:id="@+id/joint_view"
                         style="@style/AppValueDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/default_margin"
-                        android:layout_marginEnd="@dimen/default_margin"
-                        android:text="@string/separation_char"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
 
-                    <TextView
-                        style="@style/AppValueDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.userFollowing}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
 
-                    <TextView
-                        style="@style/AppContentDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/default_margin"
-                        android:layout_marginEnd="@dimen/default_margin"
-                        android:text="@string/following"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/organization_view"
+                    style="@style/AppValueDescription"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin"
-                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginTop="@dimen/half_default_margin"
+                    android:layout_marginBottom="@dimen/half_default_margin"
+                    android:drawablePadding="@dimen/default_margin"
+                    app:drawableStartCompat="@drawable/ic_organization"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/user_connection_view">
+                    app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/half_default_margin"
-                        android:layout_marginBottom="@dimen/half_default_margin"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            style="@style/AppContentDescription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/default_margin"
-                            android:layout_marginEnd="@dimen/default_margin"
-                            android:drawablePadding="@dimen/default_margin"
-                            android:text="@string/joined"
-                            app:drawableStartCompat="@drawable/ic_calendar"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
-
-                        <TextView
-                            style="@style/AppValueDescription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.userJoinedAt}"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
-
-
-                    </LinearLayout>
-
-                    <TextView
-                        style="@style/AppValueDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/default_margin"
-                        android:layout_marginTop="@dimen/half_default_margin"
-                        android:layout_marginBottom="@dimen/half_default_margin"
-                        android:drawablePadding="@dimen/default_margin"
-                        android:text="@{viewModel.userCompany}"
-                        android:visibility="@{viewModel.companyVisibility}"
-                        app:drawableStartCompat="@drawable/ic_organization"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
-
-                    <TextView
-                        style="@style/AppValueDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/default_margin"
-                        android:layout_marginTop="@dimen/half_default_margin"
-                        android:layout_marginBottom="@dimen/half_default_margin"
-                        android:drawablePadding="@dimen/default_margin"
-                        android:text="@{viewModel.userLocation}"
-                        android:visibility="@{viewModel.locationVisibility}"
-                        app:drawableStartCompat="@drawable/ic_location"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
-
-                    <TextView
-                        style="@style/AppValueDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/default_margin"
-                        android:layout_marginTop="@dimen/half_default_margin"
-                        android:layout_marginBottom="@dimen/half_default_margin"
-                        android:drawablePadding="@dimen/default_margin"
-                        android:text="@{viewModel.userEmail}"
-                        android:visibility="@{viewModel.emailVisibility}"
-                        app:drawableStartCompat="@drawable/ic_email"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
-
-                </LinearLayout>
-
-                <androidx.core.widget.ContentLoadingProgressBar
-                    style="?android:attr/progressBarStyleLarge"
-                    android:layout_width="@dimen/bigScreenLoadingSize"
-                    android:layout_height="@dimen/bigScreenLoadingSize"
-                    android:layout_marginStart="@dimen/cell_loading_margin"
-                    android:layout_marginTop="@dimen/cell_loading_margin"
-                    android:layout_marginEnd="@dimen/cell_loading_margin"
-                    android:layout_marginBottom="@dimen/cell_loading_margin"
-                    android:indeterminateTint="?attr/colorPrimary"
-                    android:visibility="@{viewModel.loadingVisibility}"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <TextView
+                    android:id="@+id/location_view"
+                    style="@style/AppValueDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginTop="@dimen/half_default_margin"
+                    android:layout_marginBottom="@dimen/half_default_margin"
+                    android:drawablePadding="@dimen/default_margin"
+                    app:drawableStartCompat="@drawable/ic_location"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-    </FrameLayout>
-</layout>
+                <TextView
+                    android:id="@+id/email_view"
+                    style="@style/AppValueDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginTop="@dimen/half_default_margin"
+                    android:layout_marginBottom="@dimen/half_default_margin"
+                    android:drawablePadding="@dimen/default_margin"
+                    app:drawableStartCompat="@drawable/ic_email"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/user_full_name_view" />
+
+            </LinearLayout>
+
+            <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/loading_view"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="@dimen/bigScreenLoadingSize"
+                android:layout_height="@dimen/bigScreenLoadingSize"
+                android:layout_marginStart="@dimen/cell_loading_margin"
+                android:layout_marginTop="@dimen/cell_loading_margin"
+                android:layout_marginEnd="@dimen/cell_loading_margin"
+                android:layout_marginBottom="@dimen/cell_loading_margin"
+                android:indeterminateTint="?attr/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</FrameLayout>

@@ -11,6 +11,7 @@ import com.github.husseinhj.githubuser.consts.READ_TIMEOUT
 import com.github.husseinhj.githubuser.consts.WRITE_TIMEOUT
 import com.github.husseinhj.githubuser.consts.CONNECT_TIMEOUT
 import com.github.husseinhj.githubuser.consts.GITHUB_API_BASE_URL
+import com.github.husseinhj.githubuser.services.interceptors.NetworkInterceptor
 import com.github.husseinhj.githubuser.services.interceptors.AuthenticationInterceptor
 
 fun Scope.getRetrofit(): Retrofit {
@@ -21,13 +22,17 @@ fun Scope.getRetrofit(): Retrofit {
         .build()
 }
 
-fun Scope.retrofitHttpClient(): OkHttpClient {
+fun retrofitHttpClient(
+    networkInterceptor: NetworkInterceptor,
+    authenticationInterceptor: AuthenticationInterceptor,
+): OkHttpClient {
     return OkHttpClient().newBuilder()
         .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
         .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
 
-        .addInterceptor(get() as AuthenticationInterceptor)
+        .addInterceptor(authenticationInterceptor)
+        .addNetworkInterceptor(networkInterceptor)
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor.Level.HEADERS

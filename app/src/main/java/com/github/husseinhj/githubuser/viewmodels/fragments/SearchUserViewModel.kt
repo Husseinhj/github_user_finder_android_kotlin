@@ -4,140 +4,66 @@ import java.util.*
 import android.view.View
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import android.content.Context
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+//import android.content.Context
+import androidx.lifecycle.*
 import com.github.husseinhj.githubuser.models.UserSimpleDetailsModel
 import com.github.husseinhj.githubuser.utils.InternetConnectivityUtil
 import com.github.husseinhj.githubuser.adapters.UserSearchResultAdapter
 import com.github.husseinhj.githubuser.services.repositories.SearchRepository
 
 enum class ErrorEnumType {
-    NONE,
     NETWORK,
     SERVER
 }
 
-class SearchUserViewModel(
-    private val state: SavedStateHandle,
-    private val searchRepository: SearchRepository
-    ): ViewModel() {
+class SearchUserViewModel(private val searchRepository: SearchRepository): ViewModel() {
 
     private var searchJob: Job? = null
-    var dataset: List<UserSimpleDetailsModel>? = null
+    private val viewModelState = MutableLiveData<SearchUserViewModelState>()
 
-    val resultAdapter: MutableLiveData<UserSearchResultAdapter> by lazy {
-        MutableLiveData<UserSearchResultAdapter>(getAdapterFromState())
+    val data: LiveData<SearchUserViewModelState>
+        get() = viewModelState
+
+    init {
+        viewModelState.value = SearchUserViewModelState.NotSearchedYet
     }
 
-    val errorType: MutableLiveData<ErrorEnumType> by lazy {
-        MutableLiveData<ErrorEnumType>(state[::errorType.name] ?: ErrorEnumType.NONE)
-    }
-
-    val loadingVisibility: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>(state[::loadingVisibility.name] ?: View.GONE)
-    }
-
-    val emptyResultVisibility: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>(state[::emptyResultVisibility.name] ?: View.VISIBLE)
-    }
-
-    val resultVisibility: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>(state[::resultVisibility.name] ?: View.GONE)
-    }
-
-    val errorPlaceholderVisibility: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>(state[::errorPlaceholderVisibility.name] ?: View.GONE)
-    }
-
-    private fun getAdapterFromState(): UserSearchResultAdapter? {
-        val jsonDataSet: String? = state[::dataset.name]
-        val rawList = Gson().fromJson(jsonDataSet, List::class.java)
-
-        if (rawList?.firstOrNull() is UserSimpleDetailsModel) {
-            @Suppress("UNCHECKED_CAST")
-            val savedDataSet: List<UserSimpleDetailsModel>? = rawList as? List<UserSimpleDetailsModel>
-            return getAdapterFromDataset(savedDataSet)
-        }
-
-        return null
-    }
-
-    private fun getAdapterFromDataset(dataset: List<UserSimpleDetailsModel>?): UserSearchResultAdapter? {
-        if (dataset == null) {
-            return null
-        }
-
-        return UserSearchResultAdapter(dataset)
-    }
-
-    fun saveState() {
-        state.apply {
-            set(::errorType.name, errorType.value)
-            set(::dataset.name, Gson().toJson(dataset))
-            set(::resultVisibility.name, resultVisibility.value)
-            set(::loadingVisibility.name, loadingVisibility.value)
-            set(::emptyResultVisibility.name, emptyResultVisibility.value)
-            set(::errorPlaceholderVisibility.name, errorPlaceholderVisibility.value)
-        }
-    }
-
-    fun searchUser(query: String?, context: Context) {
+    fun searchUser(query: String?) {
         searchJob?.cancel()
 
         if (query.isNullOrBlank()) {
-            showNowValuePlaceholder()
+            viewModelState.value = SearchUserViewModelState.NotSearchedYet
             return
         }
 
-        if (!InternetConnectivityUtil.isInternetAvailable(context)) {
-            errorPlaceholderVisibility.value = View.VISIBLE
-            errorType.value = ErrorEnumType.NETWORK
-            return
-        }
-
-        errorType.value = ErrorEnumType.NONE
         val validatedSearchQuery = removeSpaceAndLowercase(query)
+        viewModelState.value = SearchUserViewModelState.Loading
 
-        loadingVisibility.value = View.VISIBLE
-        emptyResultVisibility.value = View.GONE
-
-        searchJob = CoroutineScope(Dispatchers.IO).launch {
+        searchJob = viewModelScope.launch {
             val result = searchRepository.searchUser(validatedSearchQuery)
-            withContext(Dispatchers.Main) {
-                run {
-                    loadingVisibility.value = View.GONE
-                    dataset = result.body()?.items
-                    if (!result.isSuccessful) {
-                        showNowValuePlaceholder()
-                        errorType.value = ErrorEnumType.SERVER
-                        errorPlaceholderVisibility.value = View.VISIBLE
 
-                        return@run
-                    }
+            val userList = result.body()?.items
+            if (!result.isSuccessful) {
+                val errorType = if (result.code() == 502)
+                    ErrorEnumType.NETWORK
+                else
+                    ErrorEnumType.SERVER
 
-                    if (dataset.isNullOrEmpty()) {
-                        showNowValuePlaceholder()
-                        return@run
-                    }
-
-                    val adapter = UserSearchResultAdapter(dataset!!)
-                    resultAdapter.value = adapter
-
-                    errorType.value = ErrorEnumType.NONE
-                    resultVisibility.value = View.VISIBLE
-                    emptyResultVisibility.value = View.GONE
-                    errorPlaceholderVisibility.value = View.GONE
-                }
+                viewModelState.postValue(
+                    SearchUserViewModelState.Error(result.message(), errorType)
+                )
+                return@launch
             }
-        }
-    }
 
-    private fun showNowValuePlaceholder() {
-        resultAdapter.value = null
-        loadingVisibility.value = View.GONE
-        emptyResultVisibility.value = View.VISIBLE
+            if (userList.isNullOrEmpty()) {
+                viewModelState.postValue(SearchUserViewModelState.NotFound)
+                return@launch
+            }
+
+            viewModelState.postValue(
+                SearchUserViewModelState.SearchedResult(userList)
+            )
+        }
     }
 
     private fun removeSpaceAndLowercase(query: String) = query
@@ -145,4 +71,14 @@ class SearchUserViewModel(
         .trimEnd()
         .lowercase(Locale.getDefault())
 
+}
+
+sealed class SearchUserViewModelState {
+    object Loading: SearchUserViewModelState()
+    object NotFound: SearchUserViewModelState()
+    object NotSearchedYet: SearchUserViewModelState()
+    data class SearchedResult(val dataset: List<UserSimpleDetailsModel>):
+        SearchUserViewModelState()
+    data class Error(val message: String? = null, val errorType: ErrorEnumType? = null):
+        SearchUserViewModelState()
 }
