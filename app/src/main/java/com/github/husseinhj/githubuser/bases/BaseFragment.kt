@@ -36,7 +36,7 @@ open class BaseFragment: Fragment() {
         this.searchBarFocusListener = listener
     }
 
-    fun setOnSearchBarTextChangedListener(listener: OnTextChangedListener) {
+    fun setOnSearchBarTextChangedListener(listener: OnTextChangedListener?) {
         this.searchBarTextChanged = listener
     }
 

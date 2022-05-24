@@ -4,100 +4,132 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.LayoutInflater
+import androidx.core.view.isVisible
 import com.github.husseinhj.githubuser.R
-import androidx.databinding.DataBindingUtil
+import android.widget.AdapterView.OnItemClickListener
 import com.github.husseinhj.githubuser.bases.BaseFragment
 import com.github.husseinhj.githubuser.extensions.debounce
-import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
+import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
 import com.github.husseinhj.githubuser.models.UserSimpleDetailsModel
+import com.github.husseinhj.githubuser.adapters.UserSearchResultAdapter
 import com.github.husseinhj.githubuser.viewmodels.fragments.ErrorEnumType
 import com.github.husseinhj.githubuser.databinding.FragmentSearchUserBinding
 import com.github.husseinhj.githubuser.viewmodels.fragments.SearchUserViewModel
+import com.github.husseinhj.githubuser.viewmodels.fragments.SearchUserViewModelState
 
 class SearchUserFragment : BaseFragment() {
 
     private lateinit var binding: FragmentSearchUserBinding
-    private val searchUserViewModel by stateViewModel<SearchUserViewModel>(
-        state = { arguments ?: Bundle.EMPTY }
-    )
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        searchUserViewModel.saveState()
-
-        super.onSaveInstanceState(outState)
-    }
+    private val viewModel by stateViewModel<SearchUserViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
 
-        listenToSearchBarTextChanges()
+        this.listenToSearchBarTextChanges()
+        binding = FragmentSearchUserBinding.inflate(inflater)
+
         this.enableBackButton(true)
         this.setTitle(getString(R.string.user_search_title))
 
-        if (::binding.isInitialized) {
-            feedBindingObject()
-            return binding.root
-        }
-
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_search_user,
-            container,
-            false
-        )
-
-        feedBindingObject()
-        searchUserViewModel.resultAdapter.observe(this) {
-            binding.searchResultGridView.deferNotifyDataSetChanged()
-        }
-
-        handleErrorPlaceholder()
-        binding.searchResultGridView.setOnItemClickListener { _, _, position, _ ->
-            val model = searchUserViewModel.dataset?.get(position)
-            model?.let { navigateToUserDetail(it) }
-        }
+        binding.searchResultGridView.onItemClickListener = onSearchResultItemClicked()
+        viewModel.data.observe(this.viewLifecycleOwner, observedOnDataState())
 
         return binding.root
     }
 
-    private fun feedBindingObject() {
-        binding.viewModel = searchUserViewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.executePendingBindings()
-    }
-
-    private fun listenToSearchBarTextChanges() {
-        this.setOnSearchBarTextChangedListener { query ->
-            query.debounce { debouncedWord ->
-                context?.let { searchUserViewModel.searchUser(debouncedWord, it) }
+    private fun onSearchResultItemClicked(): OnItemClickListener {
+        return OnItemClickListener { _, _, position, _ ->
+            val state = viewModel.data.value as? SearchUserViewModelState.SearchedResult
+            val models = state?.dataset
+            models?.let {
+                navigateToUserDetail(it[position])
             }
         }
     }
 
-    private fun handleErrorPlaceholder() {
-        searchUserViewModel.errorType.observe(this) { errorType ->
-            when (errorType) {
-                ErrorEnumType.NETWORK -> {
-                    showErrorPlaceholder(
-                        getString(R.string.you_are_not_connected_to_internet),
-                        R.drawable.ic_wifi_off
-                    )
+    private fun observedOnDataState(): (t: SearchUserViewModelState) -> Unit =
+        {
+            when (it) {
+                is SearchUserViewModelState.NotSearchedYet -> {
+                    hideLoading()
+                    showPlaceholderMessage(getString(R.string.not_searched_yet))
+
+                    binding.searchResultGridView.adapter = null
                 }
-                ErrorEnumType.SERVER -> {
-                    showErrorPlaceholder(
-                        getString(R.string.server_error_message, ""),
-                        R.drawable.ic_error
-                    )
+                is SearchUserViewModelState.Loading -> {
+                    showLoading()
+                    hidePlaceholderMessage()
+                    binding.searchResultGridView.adapter = null
+                }
+                is SearchUserViewModelState.SearchedResult -> {
+                    showContent(it)
+                }
+                is SearchUserViewModelState.Error -> {
+                    showErrorMessage(it)
+                    binding.searchResultGridView.adapter = null
                 }
                 else -> {}
             }
         }
 
-        searchUserViewModel.errorPlaceholderVisibility.observe(this) {
-            binding.placeholderLayout.root.visibility = it
+    private fun showContent(it: SearchUserViewModelState.SearchedResult) {
+        hideLoading()
+        hidePlaceholderMessage()
+
+        showResultData(it)
+    }
+
+    private fun showErrorMessage(it: SearchUserViewModelState.Error) {
+        hideLoading()
+        hidePlaceholderMessage()
+
+        when (it.errorType) {
+            ErrorEnumType.NETWORK -> {
+                showErrorPlaceholder(
+                    getString(R.string.you_are_not_connected_to_internet),
+                    R.drawable.ic_wifi_off
+                )
+            }
+            ErrorEnumType.SERVER -> {
+                showErrorPlaceholder(
+                    getString(R.string.server_error_message, ""),
+                    R.drawable.ic_error
+                )
+            }
+            else -> {}
+        }
+    }
+
+    private fun showResultData(it: SearchUserViewModelState.SearchedResult) {
+        binding.searchResultGridView.adapter = UserSearchResultAdapter(it.dataset)
+        binding.searchResultGridView.deferNotifyDataSetChanged()
+    }
+
+    private fun hidePlaceholderMessage() {
+        binding.messageLabel.isVisible = false
+    }
+
+    private fun showLoading() {
+        binding.loadingView.isVisible = true
+    }
+
+    private fun showPlaceholderMessage(message: String) {
+        binding.messageLabel.text = message
+        binding.messageLabel.isVisible = true
+    }
+
+    private fun hideLoading() {
+        binding.loadingView.isVisible = false
+    }
+
+    private fun listenToSearchBarTextChanges() {
+        this.setOnSearchBarTextChangedListener { query ->
+            query.debounce { debouncedWord ->
+                viewModel.searchUser(debouncedWord)
+            }
         }
     }
 

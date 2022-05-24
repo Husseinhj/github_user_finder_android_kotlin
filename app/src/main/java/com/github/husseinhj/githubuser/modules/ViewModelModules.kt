@@ -20,11 +20,11 @@ val viewModelModules = module {
 
     // Search User ViewModel
     viewModel {
-        SearchUserViewModel(get(), get())
+        SearchUserViewModel(get())
     }
 
     // User Profile ViewModel
     viewModel {
-        UserDetailViewModel(get(), get())
+        UserDetailViewModel(get())
     }
 }
