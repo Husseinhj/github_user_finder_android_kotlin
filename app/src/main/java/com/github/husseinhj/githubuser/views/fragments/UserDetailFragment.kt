@@ -7,25 +7,26 @@ import android.content.Intent
 import android.content.Context
 import android.widget.ImageView
 import android.view.LayoutInflater
+import androidx.core.view.isVisible
 import com.github.husseinhj.githubuser.R
-import androidx.databinding.DataBindingUtil
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.github.husseinhj.githubuser.bases.BaseFragment
+import com.github.husseinhj.githubuser.extensions.toString
 import com.github.husseinhj.githubuser.extensions.navigateUp
 import com.github.husseinhj.githubuser.consts.GITHUB_USERNAME
-import org.koin.androidx.viewmodel.ext.android.stateViewModel
+import com.github.husseinhj.githubuser.extensions.isoStringToDate
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.github.husseinhj.githubuser.extensions.downloadAndShowImage
 import com.github.husseinhj.githubuser.consts.ANDROID_DEEPLINK_INTENT_KEY
 import com.github.husseinhj.githubuser.databinding.FragmentUserDetailBinding
 import com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModel
+import com.github.husseinhj.githubuser.viewmodels.fragments.UserDetailViewModelState
 
 class UserDetailFragment : BaseFragment() {
     private var usernameParam: String? = null
     private var cameFromDeeplink: Boolean = false
     private lateinit var binding: FragmentUserDetailBinding
-    private val profileViewModel by stateViewModel<UserDetailViewModel>(
-        state = { arguments ?: Bundle.EMPTY }
-    )
+    private val viewModel by viewModel<UserDetailViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +39,6 @@ class UserDetailFragment : BaseFragment() {
         if (usernameParam == null && cameFromDeeplink) {
             usernameParam = getUsernameFromDeepLinkIntentAsFallback(arguments)
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        profileViewModel.saveState()
-
-        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateView(
@@ -61,36 +56,60 @@ class UserDetailFragment : BaseFragment() {
             }
         }
 
-        if (::binding.isInitialized) {
-            return binding.root
-        }
+        binding = FragmentUserDetailBinding.inflate(inflater)
+        viewModel.data.observe(viewLifecycleOwner) {
+            when(it) {
+                is UserDetailViewModelState.Loading -> {
+                    showLoading()
+                }
+                is UserDetailViewModelState.Data -> {
+                    hideLoading()
 
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_user_detail,
-            container,
-            false
-        )
+                    setContent(it)
+                }
+                is UserDetailViewModelState.Error -> {
+                    hideLoading()
 
-        binding.viewModel = profileViewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        profileViewModel.serverErrorMessage.observe(this) { message ->
-            if (message == null) {
-                return@observe
+                    context?.let { it1 -> showErrorAlert(it.message, it1) }
+                }
             }
+        }
 
-            context?.let { showErrorAlert(message, it) }
-        }
-        profileViewModel.userAvatarUrl.observe(this) { avatarUrl ->
-            if (avatarUrl == null) {
-                return@observe
-            }
-            applyImageToView(avatarUrl, binding.userAvatarView)
-        }
-        usernameParam?.let { profileViewModel.getUserDetail(it) }
+        usernameParam?.let { viewModel.getUserDetail(it) }
 
         return binding.root
+    }
+
+    private fun showLoading() {
+        binding.loadingView.isVisible = true
+    }
+
+    private fun hideLoading() {
+        binding.loadingView.isVisible = false
+    }
+
+    private fun setContent(it: UserDetailViewModelState.Data) {
+        it.userDetail.apply {
+            binding.userFullNameView.text = name
+            binding.userBioView.text = bio ?: ""
+            binding.followersView.text = followers.toString()
+            binding.followingView.text = following.toString()
+            applyImageToView(avatarURL, binding.userAvatarView)
+            binding.usernameView.text = String.format("@%s", login ?: "")
+
+            binding.emailView.text = email
+            binding.emailView.isVisible = !email.isNullOrEmpty()
+
+            binding.locationView.text = location
+            binding.locationView.isVisible = !location.isNullOrEmpty()
+
+            binding.organizationView.text = company
+            binding.organizationView.isVisible = !company.isNullOrEmpty()
+
+            val date = createdAt?.isoStringToDate()
+            binding.jointView.isVisible = !createdAt.isNullOrEmpty()
+            binding.jointView.text = date?.toString("MMMM yyyy") ?: ""
+        }
     }
 
     private fun getUsernameFromDeepLinkIntentAsFallback(arg: Bundle?): String? {
